@@ -36,6 +36,8 @@ class Logistic(ThreeDSlide):
     rng = np.random.default_rng(213)
 
     def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+
         ## Slide: build plane and dots
         plot_range_x = (-2, 15)
         plot_range_y = (-2, 10)
