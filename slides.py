@@ -1,3 +1,5 @@
+from itertools import chain
+
 import numpy as np
 from manim import *
 from manim_slides.slide import Slide, ThreeDSlide
@@ -53,6 +55,7 @@ class Logistic(ThreeDSlide):
         self.play(GrowFromCenter(dots_a_group), GrowFromCenter(dots_b_group))
 
         self.next_slide()
+        self.add_fixed_orientation_mobjects(*dots_a, *dots_b)
 
         ## Slide: color dots
         self.play(dots_a_group.animate.set_color(CLASS_A_COLOR),
@@ -87,4 +90,22 @@ class Logistic(ThreeDSlide):
                   line_b.animate.set_value(-17))
         self.play(line_w1.animate.set_value(1), line_w2.animate.set_value(1),
                   line_b.animate.set_value(-9))
+        self.next_slide()
 
+        ## Slide: show dots on plane
+        def dot_z(dot: Dot):
+            # z = w1 * x + w2 * y + b
+            dot_x, dot_y = plane.p2c(dot.get_center())
+            return (line_b.get_value() + line_w1.get_value() * dot_x
+                    + line_w2.get_value() * dot_y) / 5
+
+        # Before adding the updater, shift dots to the designated z
+        # elegantly.
+        self.move_camera(phi=PI / 2, added_anims=[
+            dot.animate.set_z(dot_z(dot)) for dot in chain(dots_a, dots_b)])
+
+        def dot_updater(dot: Dot):
+            return dot.set_z(dot_z(dot))
+
+        for dot in chain(dots_a, dots_b):
+            dot.add_updater(dot_updater)
