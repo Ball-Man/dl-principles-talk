@@ -110,11 +110,22 @@ class Logistic(ThreeDSlide):
         line_equation.set_color_by_tex('w_2', W2_COLOR)
         line_equation.font_size = equation_font_size
 
+        w_label_displacement_x = ValueTracker(DOWN[0])
+        w_label_displacement_y = ValueTracker(DOWN[1])
+        w_label_displacement_z = ValueTracker(DOWN[2])
+
+        def w_label_displacement():
+            return np.array(
+                    [w_label_displacement_x.get_value(), w_label_displacement_y.get_value(),
+                     w_label_displacement_z.get_value()])
+
         def tex_w1_updater(tex: MathTex):
-            return tex.become(get_w1_tex(), match_height=True).next_to(line_equation, DOWN, aligned_edge=LEFT)
+            return (tex.become(get_w1_tex(), match_height=True)
+                       .next_to(line_equation, w_label_displacement(), aligned_edge=LEFT))
 
         def tex_w2_updater(tex: MathTex):
-            return tex.become(get_w2_tex(), match_height=True).next_to(w1_label, DOWN, aligned_edge=LEFT)
+            return (tex.become(get_w2_tex(), match_height=True)
+                       .next_to(w1_label, w_label_displacement(), aligned_edge=LEFT))
 
         w1_label.add_updater(tex_w1_updater)
         w2_label.add_updater(tex_w2_updater)
@@ -136,6 +147,9 @@ class Logistic(ThreeDSlide):
         self.next_slide()
 
         ## Slide: show dots on plane
+        # Keep text oriented towards the camera
+        self.add_fixed_orientation_mobjects(*equation_group.submobjects)
+
         def dot_z(dot: Dot):
             # z = w1 * x + w2 * y + b
             dot_x, dot_y = plane.p2c(dot.get_center())
@@ -145,7 +159,12 @@ class Logistic(ThreeDSlide):
         # Before adding the updater, shift dots to the designated z
         # elegantly.
         self.move_camera(phi=PI / 2, added_anims=[
-            dot.animate.set_z(dot_z(dot)) for dot in chain(dots_a, dots_b)])
+            *(dot.animate.set_z(dot_z(dot)) for dot in chain(dots_a, dots_b)),
+            # Rotate accordingly the tex text
+            line_equation.animate.shift(4 * OUT),
+            w_label_displacement_x.animate.set_value(IN[0] * 2),
+            w_label_displacement_y.animate.set_value(IN[1] * 2),
+            w_label_displacement_z.animate.set_value(IN[2] * 2)])
 
         def dot_updater(dot: Dot):
             return dot.set_z(dot_z(dot))
