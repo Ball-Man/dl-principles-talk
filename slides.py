@@ -62,16 +62,17 @@ class Logistic(ThreeDSlide):
         ## Slide: create line
         line_w1 = ValueTracker(1)
         line_w2 = ValueTracker(1)
-        line_b = ValueTracker(9)
+        line_b = ValueTracker(-9)
+
         line = Line()
 
         def line_updater(line: Line):
-            # w1 * x + w2 * y - b = 0
-            # x = (c - w2 * y) / w1
+            # w1 * x + w2 * y + b = 0
+            # x = (-b - w2 * y) / w1
             start_y = plot_range_y[0]
-            start_x = (line_b.get_value() - line_w2.get_value() * start_y) / line_w1.get_value()
+            start_x = (-line_b.get_value() - line_w2.get_value() * start_y) / line_w1.get_value()
             end_y = plot_range_y[1]
-            end_x = (line_b.get_value() - line_w2.get_value() * end_y) / line_w1.get_value()
+            end_x = (-line_b.get_value() - line_w2.get_value() * end_y) / line_w1.get_value()
             return line.become(Line(plane.c2p(start_x, start_y, 0), plane.c2p(end_x, end_y, 0)))
 
         line.add_updater(line_updater)
@@ -81,9 +82,9 @@ class Logistic(ThreeDSlide):
 
         ## Slide: plausible lines
         self.play(line_w1.animate.set_value(1.9), line_w2.animate.set_value(0.9),
-                  line_b.animate.set_value(22))
+                  line_b.animate.set_value(-22))
         self.play(line_w1.animate.set_value(1.2), line_w2.animate.set_value(1.5),
-                  line_b.animate.set_value(17))
+                  line_b.animate.set_value(-17))
         self.play(line_w1.animate.set_value(1), line_w2.animate.set_value(1),
-                  line_b.animate.set_value(9))
+                  line_b.animate.set_value(-9))
 
