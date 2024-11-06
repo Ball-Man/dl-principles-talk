@@ -85,8 +85,15 @@ class Logistic(ThreeDSlide):
         line.add_updater(line_updater)
 
         # Create line equation
-        line_equation = MathTex('w_1x + w_2y + b = 0', substrings_to_isolate=['w_1', 'w_2'])
         equation_font_size = 30
+        def get_line_equation(text: str):
+            tex = MathTex(text, substrings_to_isolate=['w_1', 'x', 'w_2', 'y', 'b'])
+            tex.set_color_by_tex('w_1', W1_COLOR)
+            tex.set_color_by_tex('w_2', W2_COLOR)
+            tex.font_size = equation_font_size
+            return tex
+
+        line_equation = get_line_equation('w_1x + w_2y + b = 0')
 
         def get_w1_tex() -> MathTex:
             label = MathTex(f'w_1 = {{{{ {line_w1.get_value():.2f} }}}}')
@@ -104,11 +111,6 @@ class Logistic(ThreeDSlide):
         w1_label = get_w1_tex().next_to(line_equation, DOWN)
         w2_label = get_w2_tex().next_to(w1_label, DOWN)
         equation_group = VGroup(line_equation, w1_label, w2_label).shift(UP * 3 + LEFT * 2)
-
-        # Color and style tex
-        line_equation.set_color_by_tex('w_1', W1_COLOR)
-        line_equation.set_color_by_tex('w_2', W2_COLOR)
-        line_equation.font_size = equation_font_size
 
         w_label_displacement_x = ValueTracker(DOWN[0])
         w_label_displacement_y = ValueTracker(DOWN[1])
@@ -144,6 +146,22 @@ class Logistic(ThreeDSlide):
                   line_b.animate.set_value(-17))
         self.play(line_w1.animate.set_value(1), line_w2.animate.set_value(1),
                   line_b.animate.set_value(-9))
+        self.next_slide()
+
+        ## Slide: From decision boundary to plane
+        # Disable temporarily the weights updaters to avoid animation artifacts
+        w1_label.remove_updater(tex_w1_updater)
+        w2_label.remove_updater(tex_w2_updater)
+
+        old_line_equation = line_equation
+        line_equation = get_line_equation('z = w_1x + w_2y + b').shift(UP * 3 + LEFT * 2)
+        equation_group.remove(old_line_equation)
+        equation_group.add(line_equation)
+        self.play(TransformMatchingTex(old_line_equation, line_equation))
+
+        w1_label.add_updater(tex_w1_updater)
+        w2_label.add_updater(tex_w2_updater)
+
         self.next_slide()
 
         ## Slide: show dots on plane
