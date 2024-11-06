@@ -6,6 +6,8 @@ from manim_slides.slide import Slide, ThreeDSlide
 
 CLASS_A_COLOR = PURPLE
 CLASS_B_COLOR = YELLOW
+W1_COLOR = MAROON
+W2_COLOR = PINK
 
 
 def static_slide(slide, tiny_time=0.1):
@@ -80,7 +82,46 @@ class Logistic(ThreeDSlide):
 
         line.add_updater(line_updater)
 
-        self.play(Create(line))
+        # Create line equation
+        line_equation = MathTex('w_1x + w_2y + b = 0', substrings_to_isolate=['w_1', 'w_2'])
+        equation_font_size = 30
+
+        def get_w1_tex() -> MathTex:
+            label = MathTex(f'w_1 = {{{{ {line_w1.get_value():.2f} }}}}')
+            label.submobjects[1].color = W1_COLOR
+            label.font_size = equation_font_size
+            return label
+
+        def get_w2_tex() -> MathTex:
+            label = MathTex(f'w_2 = {{{{ {line_w2.get_value():.2f} }}}}')
+
+            label.submobjects[1].color = W2_COLOR
+            label.font_size = equation_font_size
+            return label
+
+        w1_label = get_w1_tex().next_to(line_equation, DOWN)
+        w2_label = get_w2_tex().next_to(w1_label, DOWN)
+        equation_group = VGroup(line_equation, w1_label, w2_label).shift(UP * 3 + LEFT * 2)
+
+        # Color and style tex
+        line_equation.set_color_by_tex('w_1', W1_COLOR)
+        line_equation.set_color_by_tex('w_2', W2_COLOR)
+        line_equation.font_size = equation_font_size
+
+        def tex_w1_updater(tex: MathTex):
+            return tex.become(get_w1_tex(), match_height=True).next_to(line_equation, DOWN, aligned_edge=LEFT)
+
+        def tex_w2_updater(tex: MathTex):
+            return tex.become(get_w2_tex(), match_height=True).next_to(w1_label, DOWN, aligned_edge=LEFT)
+
+        w1_label.add_updater(tex_w1_updater)
+        w2_label.add_updater(tex_w2_updater)
+
+        top_rect = SurroundingRectangle(equation_group, color=WHITE)
+        top_rect.set_fill(config.background_color, 1.)
+
+        self.play(Create(line), Create(top_rect), Write(line_equation), Write(w1_label),
+                  Write(w2_label))
         self.next_slide(loop=True)
 
         ## Slide: plausible lines
