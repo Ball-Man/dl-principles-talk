@@ -4,6 +4,9 @@ import numpy as np
 from manim import *
 from manim_slides.slide import Slide, ThreeDSlide
 
+ML_COLOR = ORANGE
+DL_COLOR = RED_C
+
 CLASS_A_COLOR = PURPLE
 CLASS_B_COLOR = YELLOW
 W1_COLOR = MAROON
@@ -30,6 +33,41 @@ class Welcome(Slide):
 
 def generate_points(rng: np.random.Generator, n, range_x, range_y):
     return np.concatenate((rng.uniform(*range_x, (n, 1)), rng.uniform(*range_y, (n, 1))), axis=1)
+
+
+class AIFamily(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+
+        ## Slide: title
+        title = Text('The AI Family')
+        self.add(title)
+        static_slide(self)
+        self.next_slide()
+
+        ## Slide: main AI set
+        ai_set = RoundedRectangle(width=6, height=6).shift(DOWN)
+        ai_set_label = Text('AI').move_to(ai_set, UL).shift(DR / 4)
+        ai_set_label.font_size = 30
+        self.play(LaggedStart(title.animate.to_edge(UP), AnimationGroup(Create(ai_set), Write(ai_set_label)), lag_ratio=0.5))
+        self.next_slide()
+
+        ## Slide: ML subset
+        ml_subset = Circle(5 / 2, color=ML_COLOR).shift(DOWN)
+        ml_subset_label = Text('ML').move_to(ml_subset, UL).shift(DR / 3 * 2)
+        ml_subset_label.color = ml_subset.stroke_color
+        ml_subset_label.font_size = 30
+        self.play(Create(ml_subset), Write(ml_subset_label))
+        self.next_slide()
+
+        ## Slide: DL subset
+        dl_subset = Circle(3 / 2, color=DL_COLOR).shift(DOWN)
+        dl_subset_label = Text('DL').move_to(dl_subset, UL).shift(DR / 2)
+        dl_subset_label.color = dl_subset.stroke_color
+        dl_subset_label.font_size = 30
+        self.play(Create(dl_subset), Write(dl_subset_label))
+        self.next_slide()
 
 
 class Logistic(ThreeDSlide):
