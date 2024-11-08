@@ -310,3 +310,42 @@ class Logistic(ThreeDSlide):
         self.play(line_w1.animate.set_value(1), line_w2.animate.set_value(1),
                   line_b.animate.set_value(-9))
         self.next_slide()
+
+
+class LinearToNonLinear(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+        formula_font_size = 40
+
+        ## Slide: title
+        title = Text('Logistic Regressor')
+        self.add(title)
+
+        static_slide(self)
+        self.next_slide()
+
+        ## Slide: Function definition
+        function_def = MathTex(r'f: \mathbb{R}^2 \to \mathbb{R}').shift(UP)
+        function_def.font_size = formula_font_size
+        function_def.to_edge(LEFT)
+
+        regressor_formula = MathTex(r'f(x, y) = \sigma(w_1x + w_2y + b)',
+                                    substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
+        regressor_formula.font_size = formula_font_size
+        regressor_formula.to_edge(LEFT)
+
+        self.play(title.animate.to_edge(UP), Write(function_def), Write(regressor_formula))
+
+        self.next_slide()
+
+        ## Slide: get rid of b
+        regressor_formula_no_b = MathTex(r'f(x, y) = \sigma(w_1x + w_2y)',
+                                         substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
+        regressor_formula_no_b.font_size = formula_font_size
+        regressor_formula_no_b.to_edge(LEFT)
+
+        self.play(TransformMatchingTex(regressor_formula, regressor_formula_no_b))
+        regressor_formula = regressor_formula_no_b
+
+        self.next_slide()
