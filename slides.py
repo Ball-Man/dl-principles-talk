@@ -105,6 +105,7 @@ class Logistic(ThreeDSlide):
         self.next_slide()
 
         ## Slide: create line
+        scene_rotation = ValueTracker(0)
         line_w1 = ValueTracker(1)
         line_w2 = ValueTracker(1)
         line_b = ValueTracker(-9)
@@ -131,7 +132,7 @@ class Logistic(ThreeDSlide):
             tex.font_size = equation_font_size
             return tex
 
-        line_equation = get_line_equation('w_1x + w_2y + b = 0')
+        line_equation = get_line_equation('w_1x + w_2y + b = 0').shift(UP * 3 + LEFT * 2)
 
         def get_w1_tex() -> MathTex:
             label = MathTex(f'w_1 = {{{{ {line_w1.get_value():.2f} }}}}')
@@ -146,26 +147,39 @@ class Logistic(ThreeDSlide):
             label.font_size = equation_font_size
             return label
 
-        w1_label = get_w1_tex().next_to(line_equation, DOWN)
-        w2_label = get_w2_tex().next_to(w1_label, DOWN)
-        equation_group = VGroup(line_equation, w1_label, w2_label).shift(UP * 3 + LEFT * 2)
+        w_label_displacement_vec = line_equation.get_critical_point(LEFT) + DOWN / 3
+        w_label_displacement_x = ValueTracker(w_label_displacement_vec[0])
+        w_label_displacement_y = ValueTracker(w_label_displacement_vec[1])
+        w_label_displacement_z = ValueTracker(w_label_displacement_vec[2])
+        w1_label = get_w1_tex().move_to(w_label_displacement_vec, LEFT)
 
-        w_label_displacement_x = ValueTracker(DOWN[0])
-        w_label_displacement_y = ValueTracker(DOWN[1])
-        w_label_displacement_z = ValueTracker(DOWN[2])
+
+        w2_label_displacement_vec = w1_label.get_critical_point(LEFT) + DOWN / 3
+        w2_label_displacement_x = ValueTracker(w2_label_displacement_vec[0])
+        w2_label_displacement_y = ValueTracker(w2_label_displacement_vec[1])
+        w2_label_displacement_z = ValueTracker(w2_label_displacement_vec[2])
+        w2_label = get_w2_tex().move_to(w2_label_displacement_vec, LEFT)
+        equation_group = VGroup(line_equation, w1_label, w2_label)
 
         def w_label_displacement():
             return np.array(
                     [w_label_displacement_x.get_value(), w_label_displacement_y.get_value(),
                      w_label_displacement_z.get_value()])
 
+        def w2_label_displacement():
+            return np.array(
+                    [w2_label_displacement_x.get_value(), w2_label_displacement_y.get_value(),
+                     w2_label_displacement_z.get_value()])
+
         def tex_w1_updater(tex: MathTex):
-            return (tex.become(get_w1_tex(), match_height=True)
-                       .next_to(line_equation, w_label_displacement(), aligned_edge=LEFT))
+            return (tex.become(get_w1_tex())
+                       .rotate(scene_rotation.get_value(), RIGHT)
+                       .move_to(w_label_displacement(), LEFT))
 
         def tex_w2_updater(tex: MathTex):
-            return (tex.become(get_w2_tex(), match_height=True)
-                       .next_to(w1_label, w_label_displacement(), aligned_edge=LEFT))
+            return (tex.become(get_w2_tex())
+                       .rotate(scene_rotation.get_value(), RIGHT)
+                       .move_to(w2_label_displacement(), LEFT))
 
         w1_label.add_updater(tex_w1_updater)
         w2_label.add_updater(tex_w2_updater)
@@ -203,24 +217,39 @@ class Logistic(ThreeDSlide):
         self.next_slide()
 
         ## Slide: show dots on plane
-        # Keep text oriented towards the camera
-        self.add_fixed_orientation_mobjects(*equation_group.submobjects)
-
         def dot_z(dot: Dot):
             # z = w1 * x + w2 * y + b
             dot_x, dot_y = plane.p2c(dot.get_center())
             return (line_b.get_value() + line_w1.get_value() * dot_x
                     + line_w2.get_value() * dot_y) / 5
 
+        line.remove_updater(line_updater)       # Prepare to remove the line
+
+        # Must use an updater to animate the rotation, maybe due to some
+        # bug.
+        twod_line_equation = line_equation.copy().set_opacity(0)
+        def line_equation_updater(eq: MathTex):
+            return eq.become(twod_line_equation).set_opacity(1).rotate(scene_rotation.get_value(),
+                                                                       RIGHT)
+        line_equation.add_updater(line_equation_updater)
+
         # Before adding the updater, shift dots to the designated z
         # elegantly.
+        w_label_displacement_vec += 3.5 * OUT
         self.move_camera(phi=PI / 2, added_anims=[
             *(dot.animate.set_z(dot_z(dot)) for dot in chain(dots_a, dots_b)),
+            # Hide extra stuff from the scene
+            FadeOut(line),
+            FadeOut(top_rect),
             # Rotate accordingly the tex text
-            line_equation.animate.shift(4 * OUT),
-            w_label_displacement_x.animate.set_value(IN[0] * 2),
-            w_label_displacement_y.animate.set_value(IN[1] * 2),
-            w_label_displacement_z.animate.set_value(IN[2] * 2)])
+            twod_line_equation.animate.shift(4 * OUT),
+            scene_rotation.animate.set_value(PI / 2),
+            w_label_displacement_x.animate.set_value(w_label_displacement_vec[0]),
+            w_label_displacement_y.animate.set_value(w_label_displacement_vec[1]),
+            w_label_displacement_z.animate.set_value(w_label_displacement_vec[2]),
+            w2_label_displacement_z.animate.set_value(3)])
+
+        line_equation.remove_updater(line_equation_updater)
 
         def dot_updater(dot: Dot):
             return dot.set_z(dot_z(dot))
