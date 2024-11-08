@@ -1,4 +1,5 @@
-from itertools import chain
+from itertools import chain, product
+from collections.abc import Iterable
 
 import numpy as np
 from manim import *
@@ -312,6 +313,15 @@ class Logistic(ThreeDSlide):
         self.next_slide()
 
 
+def all_arrows(from_objects: Iterable[VMobject], to_objects: Iterable[VMobject],
+               line_factory=Arrow) -> list[VMobject]:
+    """Get lines connecting the objects in from_ to the objects in to_."""
+    lines = []
+    for from_, to in product(from_objects, to_objects):
+        lines.append(line_factory(from_.get_critical_point(RIGHT), to.get_critical_point(LEFT)))
+    return lines
+
+
 class LinearToNonLinear(Slide):
 
     def construct(self):
@@ -381,12 +391,11 @@ class LinearToNonLinear(Slide):
         )
         output_label.font_size = formula_font_size
         output_label.next_to(perceptron, RIGHT).shift(RIGHT)
-        x_p_line = Arrow(x_label.get_critical_point(RIGHT), perceptron.get_critical_point(LEFT))
-        y_p_line = Arrow(y_label.get_critical_point(RIGHT), perceptron.get_critical_point(LEFT))
+        x_y_lines = all_arrows((x_label, y_label), (perceptron,))
         output_line = Arrow(perceptron.get_critical_point(RIGHT),
                             output_label.get_critical_point(LEFT))
-        perceptron_group = VGroup(perceptron, x_label, y_label, x_p_line,
-                                  y_p_line, output_label, output_line).shift(RIGHT * 3)
+        perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines,
+                                  output_label, output_line).shift(RIGHT * 3)
 
         self.play(Create(perceptron_group, lag_ratio=0))
         self.next_slide()
