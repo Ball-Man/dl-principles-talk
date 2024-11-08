@@ -256,3 +256,18 @@ class Logistic(ThreeDSlide):
 
         for dot in chain(dots_a, dots_b):
             dot.add_updater(dot_updater)
+
+        self.next_slide()
+
+        ## Slide: sigmoid
+        old_line_equation = line_equation
+        line_equation = (get_line_equation(r'z = \sigma(w_1x + w_2y + b)')
+                         .move_to(line_equation, LEFT).rotate(PI / 2, axis=RIGHT))
+
+        sigmoid = (MathTex(r'\sigma(x) = \frac{1}{1 + e^{-x}}')
+                   .next_to(line_equation, 3 * RIGHT)
+                   .shift(2 * UP)
+                   .rotate(PI / 2, RIGHT))
+        sigmoid.font_size = equation_font_size
+
+        self.play(TransformMatchingTex(old_line_equation, line_equation), Write(sigmoid))
