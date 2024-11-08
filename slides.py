@@ -35,6 +35,11 @@ def generate_points(rng: np.random.Generator, n, range_x, range_y):
     return np.concatenate((rng.uniform(*range_x, (n, 1)), rng.uniform(*range_y, (n, 1))), axis=1)
 
 
+def sigmoid(value: float | np.ndarray) -> float | np.ndarray:
+    """Apply sigmoid function."""
+    return 1 / (1 + np.exp(-value))
+
+
 class AIFamily(Slide):
 
     def construct(self):
@@ -264,10 +269,21 @@ class Logistic(ThreeDSlide):
         line_equation = (get_line_equation(r'z = \sigma(w_1x + w_2y + b)')
                          .move_to(line_equation, LEFT).rotate(PI / 2, axis=RIGHT))
 
-        sigmoid = (MathTex(r'\sigma(x) = \frac{1}{1 + e^{-x}}')
-                   .next_to(line_equation, 3 * RIGHT)
-                   .shift(2 * UP)
-                   .rotate(PI / 2, RIGHT))
-        sigmoid.font_size = equation_font_size
+        sigmoid_label = (MathTex(r'\sigma(x) = \frac{1}{1 + e^{-x}}')
+                         .next_to(line_equation, 3 * RIGHT)
+                         .shift(2 * UP)
+                         .rotate(PI / 2, RIGHT))
+        sigmoid_label.font_size = equation_font_size
 
-        self.play(TransformMatchingTex(old_line_equation, line_equation), Write(sigmoid))
+        # Temp remove updater to apply sigmoid to all dots
+        for dot in chain(dots_a, dots_b):
+            dot.remove_updater(dot_updater)
+
+        dots_sig_z = sigmoid(np.array([dot.get_z() for dot in chain(dots_a, dots_b)]))
+
+        self.play(TransformMatchingTex(old_line_equation, line_equation),
+                  Write(sigmoid_label),
+                  # Sigmoid the dots
+                  *(dot.animate.set_z(new_z) for dot, new_z in zip(chain(dots_a, dots_b),
+                                                                   dots_sig_z)))
+        self.next_slide()
