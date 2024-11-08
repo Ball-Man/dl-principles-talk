@@ -278,7 +278,7 @@ class Logistic(ThreeDSlide):
         line_equation = (get_line_equation(r'z = \sigma(w_1x + w_2y + b)')
                          .move_to(line_equation, LEFT).rotate(PI / 2, axis=RIGHT))
 
-        sigmoid_label = (MathTex(r'\sigma(x) = \frac{1}{1 + e^{-x}}')
+        sigmoid_label = (MathTex(r'\sigma(t) = \frac{1}{1 + e^{-t}}')
                          .next_to(line_equation, 3 * RIGHT)
                          .shift(2 * UP)
                          .rotate(PI / 2, RIGHT))
