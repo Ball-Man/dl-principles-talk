@@ -399,3 +399,50 @@ class LinearToNonLinear(Slide):
 
         self.play(Create(perceptron_group, lag_ratio=0))
         self.next_slide()
+
+        ## Slide: multivaried function
+        # Update the matrix form
+        regressor_matrix_formula_multi = MathTex(
+            r'''
+            f \left( \left[ \begin{array}{c} x \\ y \\ z \end{array} \right] \right) =
+            \sigma\left(
+            \left[ \begin{array}{ccc}
+            w_1 & w_2 & w_3
+            \end{array} \right]
+            \left[ \begin{array}{c}
+            x \\
+            y \\
+            z
+            \end{array} \right]
+            \right)
+            '''
+        )
+        regressor_matrix_formula_multi.font_size = formula_font_size
+        regressor_matrix_formula_multi.to_edge(LEFT).shift(0.5 * DOWN)
+
+        # Update function def
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}').shift(UP)
+        function_def_multi.font_size = formula_font_size
+        function_def_multi.to_edge(LEFT)
+
+        # Update perceptron
+        perceptron = Circle(0.2)
+        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
+        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
+        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
+        output_label = MathTex(
+            r'f \left( \left[ \begin{array}{c} x \\ y \\ z\end{array} \right] \right)'
+        )
+        output_label.font_size = formula_font_size
+        output_label.next_to(perceptron, RIGHT).shift(RIGHT)
+        x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron,))
+        output_line = Arrow(perceptron.get_critical_point(RIGHT),
+                            output_label.get_critical_point(LEFT))
+        perceptron_group_multi = VGroup(perceptron, x_label, y_label, z_label, *x_y_lines,
+                                        output_label, output_line).shift(RIGHT * 3)
+
+        self.play(TransformMatchingShapes(regressor_matrix_formula,
+                                          regressor_matrix_formula_multi),
+                  TransformMatchingShapes(function_def, function_def_multi),
+                  FadeTransform(perceptron_group, perceptron_group_multi))
+        self.next_slide()
