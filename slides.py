@@ -262,6 +262,15 @@ class Logistic(ThreeDSlide):
         for dot in chain(dots_a, dots_b):
             dot.add_updater(dot_updater)
 
+        self.next_slide(loop=True)
+
+        ## Slide: move the decision boundary, in z view this time
+        self.play(line_w1.animate.set_value(1.9), line_w2.animate.set_value(0.9),
+                  line_b.animate.set_value(-22))
+        self.play(line_w1.animate.set_value(1.2), line_w2.animate.set_value(1.5),
+                  line_b.animate.set_value(-17))
+        self.play(line_w1.animate.set_value(1), line_w2.animate.set_value(1),
+                  line_b.animate.set_value(-9))
         self.next_slide()
 
         ## Slide: sigmoid
