@@ -371,3 +371,22 @@ class LinearToNonLinear(Slide):
         # Animate the expression
         self.play(TransformMatchingShapes(regressor_formula, regressor_matrix_formula))
         self.next_slide()
+
+        ## Slide: the perceptron
+        perceptron = Circle(0.2)
+        x_label = MathTex('x').next_to(perceptron, LEFT).shift(LEFT + 0.5 * UP)
+        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + 0.5 * DOWN)
+        output_label = MathTex(
+            r'f \left( \left[ \begin{array}{c} x \\ y \end{array} \right] \right)'
+        )
+        output_label.font_size = formula_font_size
+        output_label.next_to(perceptron, RIGHT).shift(RIGHT)
+        x_p_line = Arrow(x_label.get_critical_point(RIGHT), perceptron.get_critical_point(LEFT))
+        y_p_line = Arrow(y_label.get_critical_point(RIGHT), perceptron.get_critical_point(LEFT))
+        output_line = Arrow(perceptron.get_critical_point(RIGHT),
+                            output_label.get_critical_point(LEFT))
+        perceptron_group = VGroup(perceptron, x_label, y_label, x_p_line,
+                                  y_p_line, output_label, output_line).shift(RIGHT * 3)
+
+        self.play(Create(perceptron_group, lag_ratio=0))
+        self.next_slide()
