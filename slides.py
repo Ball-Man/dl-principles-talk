@@ -349,3 +349,25 @@ class LinearToNonLinear(Slide):
         regressor_formula = regressor_formula_no_b
 
         self.next_slide()
+
+        ## Slide: matrix form
+        regressor_matrix_formula = MathTex(
+            r'''
+            f \left( \left[ \begin{array}{c} x \\ y \end{array} \right] \right) =
+            \sigma\left(
+            \left[ \begin{array}{cc}
+            w_1 & w_2
+            \end{array} \right]
+            \left[ \begin{array}{c}
+            x \\
+            y
+            \end{array} \right]
+            \right)
+            '''
+        )
+        regressor_matrix_formula.font_size = formula_font_size
+        regressor_matrix_formula.to_edge(LEFT)
+
+        # Animate the expression
+        self.play(TransformMatchingShapes(regressor_formula, regressor_matrix_formula))
+        self.next_slide()
