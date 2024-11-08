@@ -295,4 +295,18 @@ class Logistic(ThreeDSlide):
                   # Sigmoid the dots
                   *(dot.animate.set_z(new_z) for dot, new_z in zip(chain(dots_a, dots_b),
                                                                    dots_sig_z)))
+        self.next_slide(loop=True)
+
+        def dot_sigmoid_updater(dot: Dot):
+            return dot.set_z(sigmoid(dot_z(dot)))
+
+        for dot in chain(dots_a, dots_b):
+            dot.add_updater(dot_sigmoid_updater)
+
+        self.play(line_w1.animate.set_value(1.9), line_w2.animate.set_value(0.9),
+                  line_b.animate.set_value(-22))
+        self.play(line_w1.animate.set_value(1.2), line_w2.animate.set_value(1.5),
+                  line_b.animate.set_value(-17))
+        self.play(line_w1.animate.set_value(1), line_w2.animate.set_value(1),
+                  line_b.animate.set_value(-9))
         self.next_slide()
