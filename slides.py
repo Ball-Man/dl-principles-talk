@@ -516,3 +516,84 @@ class LinearToNonLinear(Slide):
         function_def = function_def_multi
         perceptron_group = perceptron_group_multi
         self.next_slide()
+
+        ## Slide: more layers
+        # Update the matrix form
+        regressor_matrix_formula_multi = MathTex(
+            r'''
+            f \left( \left[ \begin{array}{c} x \\ y \\ z \end{array} \right] \right) =
+            \sigma\left(
+            \left[ \begin{array}{ccc}
+            w_{10} & w_{11} & w_{12} \\
+            w_{13} & w_{14} & w_{15} \\
+            w_{16} & w_{17} & w_{18}
+            \end{array} \right]
+            \sigma\left(
+            \left[ \begin{array}{ccc}
+            w_{1} & w_{2} & w_{3} \\
+            w_{4} & w_{5} & w_{6} \\
+            w_{7} & w_{8} & w_{9}
+            \end{array} \right]
+            \left[ \begin{array}{c}
+            x \\
+            y \\
+            z
+            \end{array} \right]
+            \right) \right)
+            '''
+        )
+        regressor_matrix_formula_multi.font_size = formula_font_size
+        regressor_matrix_formula_multi.to_edge(LEFT).shift(0.5 * DOWN)
+
+        # Update function def
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2').shift(UP)
+        function_def_multi.font_size = formula_font_size
+        function_def_multi.to_edge(LEFT)
+
+        # Update perceptron
+        perceptron = Circle(0.2)
+        perceptron_2 = Circle(0.2).shift(DOWN)
+        perceptron_3 = Circle(0.2).shift(UP)
+        perceptron_2_1 = Circle(0.2).shift(RIGHT)
+        perceptron_2_2 = Circle(0.2).shift(DR)
+        perceptron_2_3 = Circle(0.2).shift(UR)
+
+        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
+        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
+        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
+        output_label = MathTex(
+            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_1'
+        )
+        output_label_2 = MathTex(
+            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_2'
+        )
+        output_label_3 = MathTex(
+            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
+        ).shift(DOWN)
+        for label in (output_label, output_label_2, output_label_3):
+            label.font_size = formula_font_size
+            label.next_to(perceptron_2_1, RIGHT).shift(RIGHT)
+        output_label.shift(UP)
+        output_label_3.shift(DOWN)
+
+        x_y_lines = (
+            all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2, perceptron_3))
+            + all_arrows((perceptron, perceptron_2, perceptron_3),
+                         (perceptron_2_1, perceptron_2_2, perceptron_2_3))
+        )
+        output_lines = all_arrows((perceptron_2_1, perceptron_2_2, perceptron_2_3),
+                                  (output_label, output_label_2, output_label_3))
+        perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
+                                        perceptron_2_1, perceptron_2_2, perceptron_2_3,
+                                        x_label, y_label, z_label,
+                                        *x_y_lines, output_label, output_label_2, output_label_3,
+                                        *output_lines).shift(RIGHT * 3)
+
+        self.play(TransformMatchingShapes(regressor_matrix_formula,
+                                          regressor_matrix_formula_multi),
+                  TransformMatchingShapes(function_def, function_def_multi),
+                  FadeTransform(perceptron_group, perceptron_group_multi))
+        regressor_matrix_formula = regressor_matrix_formula_multi
+        function_def = function_def_multi
+        perceptron_group = perceptron_group_multi
+        self.next_slide()
