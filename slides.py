@@ -485,17 +485,28 @@ class LinearToNonLinear(Slide):
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
         z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
         output_label = MathTex(
-            r'f \left( \left[ \begin{array}{c} x \\ y \\ z\end{array} \right] \right)'
+            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_1'
         )
-        output_label.font_size = formula_font_size
-        output_label.next_to(perceptron, RIGHT).shift(RIGHT)
+        output_label_2 = MathTex(
+            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_2'
+        )
+        output_label_3 = MathTex(
+            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
+        ).shift(DOWN)
+        for label in (output_label, output_label_2, output_label_3):
+            label.font_size = formula_font_size
+            label.next_to(perceptron, RIGHT).shift(RIGHT)
+        output_label.shift(UP)
+        output_label_3.shift(DOWN)
+
         x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2,
                                                              perceptron_3))
-        output_line = Arrow(perceptron.get_critical_point(RIGHT),
-                            output_label.get_critical_point(LEFT))
+        output_lines = all_arrows((perceptron, perceptron_2, perceptron_3),
+                                  (output_label, output_label_2, output_label_3))
         perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
                                         x_label, y_label, z_label,
-                                        *x_y_lines, output_label, output_line).shift(RIGHT * 3)
+                                        *x_y_lines, output_label, output_label_2, output_label_3,
+                                        *output_lines).shift(RIGHT * 3)
 
         self.play(TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
