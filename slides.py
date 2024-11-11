@@ -634,3 +634,13 @@ class LinearToNonLinear(Slide):
         # to prevent this from happening.
         self.add(new_title)
         self.next_slide()
+
+        ## Slide: let's simplify
+        regressor_concise_formula = MathTex(r'f(v) = \sigma(\,W_2\: \sigma(\,W_1 v\,)\,)')
+        regressor_concise_formula.font_size = formula_font_size
+        regressor_concise_formula.to_edge(LEFT).shift(matrix_form_shift)
+
+        self.play(TransformMatchingShapes(regressor_matrix_formula_multi,
+                                          regressor_concise_formula))
+
+        self.next_slide()
