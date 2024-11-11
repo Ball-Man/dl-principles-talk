@@ -501,7 +501,7 @@ class LinearToNonLinear(Slide):
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^3')
         function_def_multi.font_size = formula_font_size
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
@@ -574,7 +574,7 @@ class LinearToNonLinear(Slide):
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^3')
         function_def_multi.font_size = formula_font_size
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
