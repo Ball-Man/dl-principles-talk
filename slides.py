@@ -338,12 +338,10 @@ class LinearToNonLinear(Slide):
         ## Slide: Function definition
         function_def = MathTex(r'f: \mathbb{R}^2 \to \mathbb{R}').shift(UP)
         function_def.font_size = formula_font_size
-        function_def.to_edge(LEFT)
 
         regressor_formula = MathTex(r'f(x, y) = \sigma(w_1x + w_2y + b)',
                                     substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
         regressor_formula.font_size = formula_font_size
-        regressor_formula.to_edge(LEFT)
 
         self.play(title.animate.to_edge(UP), Write(function_def), Write(regressor_formula))
 
@@ -353,7 +351,6 @@ class LinearToNonLinear(Slide):
         regressor_formula_no_b = MathTex(r'f(x, y) = \sigma(w_1x + w_2y)',
                                          substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
         regressor_formula_no_b.font_size = formula_font_size
-        regressor_formula_no_b.to_edge(LEFT)
 
         self.play(TransformMatchingTex(regressor_formula, regressor_formula_no_b))
         regressor_formula = regressor_formula_no_b
@@ -361,6 +358,10 @@ class LinearToNonLinear(Slide):
         self.next_slide()
 
         ## Slide: matrix form
+        # Parameters used later on for consistency
+        perceptron_group_shift = DOWN * 2
+        matrix_form_shift = UP
+
         regressor_matrix_formula = MathTex(
             r'''
             f \left( \left[ \begin{array}{c} x \\ y \end{array} \right] \right) =
@@ -376,7 +377,6 @@ class LinearToNonLinear(Slide):
             '''
         )
         regressor_matrix_formula.font_size = formula_font_size
-        regressor_matrix_formula.to_edge(LEFT)
 
         # Animate the expression
         self.play(TransformMatchingShapes(regressor_formula, regressor_matrix_formula))
@@ -395,9 +395,14 @@ class LinearToNonLinear(Slide):
         output_line = Arrow(perceptron.get_critical_point(RIGHT),
                             output_label.get_critical_point(LEFT))
         perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines,
-                                  output_label, output_line).shift(RIGHT * 3)
+                                  output_label, output_line).to_edge(LEFT).shift(perceptron_group_shift)
 
-        self.play(Create(perceptron_group, lag_ratio=0))
+
+        self.play(function_def.animate.to_edge(LEFT),
+                  regressor_matrix_formula.animate.to_edge(LEFT))
+        self.play(function_def.animate.shift(2 * UP),
+                  regressor_matrix_formula.animate.shift(matrix_form_shift),
+                  Write(perceptron_group, lag_ratio=0))
         self.next_slide()
 
         ## Slide: multivaried function
@@ -418,12 +423,12 @@ class LinearToNonLinear(Slide):
             '''
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
-        regressor_matrix_formula_multi.to_edge(LEFT).shift(0.5 * DOWN)
+        regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}').shift(UP)
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}')
         function_def_multi.font_size = formula_font_size
-        function_def_multi.to_edge(LEFT)
+        function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
         perceptron = Circle(0.2)
@@ -439,7 +444,7 @@ class LinearToNonLinear(Slide):
         output_line = Arrow(perceptron.get_critical_point(RIGHT),
                             output_label.get_critical_point(LEFT))
         perceptron_group_multi = VGroup(perceptron, x_label, y_label, z_label, *x_y_lines,
-                                        output_label, output_line).shift(RIGHT * 3)
+                                        output_label, output_line).to_edge(LEFT).shift(perceptron_group_shift)
 
         self.play(TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
@@ -470,12 +475,12 @@ class LinearToNonLinear(Slide):
             '''
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
-        regressor_matrix_formula_multi.to_edge(LEFT).shift(0.5 * DOWN)
+        regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2').shift(UP)
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
         function_def_multi.font_size = formula_font_size
-        function_def_multi.to_edge(LEFT)
+        function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
         perceptron = Circle(0.2)
@@ -506,7 +511,7 @@ class LinearToNonLinear(Slide):
         perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
                                         x_label, y_label, z_label,
                                         *x_y_lines, output_label, output_label_2, output_label_3,
-                                        *output_lines).shift(RIGHT * 3)
+                                        *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
         self.play(TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
@@ -543,12 +548,12 @@ class LinearToNonLinear(Slide):
             '''
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
-        regressor_matrix_formula_multi.to_edge(LEFT).shift(0.5 * DOWN)
+        regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2').shift(UP)
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
         function_def_multi.font_size = formula_font_size
-        function_def_multi.to_edge(LEFT)
+        function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
         perceptron = Circle(0.2)
@@ -587,7 +592,7 @@ class LinearToNonLinear(Slide):
                                         perceptron_2_1, perceptron_2_2, perceptron_2_3,
                                         x_label, y_label, z_label,
                                         *x_y_lines, output_label, output_label_2, output_label_3,
-                                        *output_lines).shift(RIGHT * 3)
+                                        *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
         self.play(TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
