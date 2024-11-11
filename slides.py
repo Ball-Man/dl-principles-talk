@@ -322,9 +322,25 @@ def neural_net_connection_arrow(*args, **kwargs) -> Arrow:
 
 def all_arrows(from_objects: Iterable[VMobject], to_objects: Iterable[VMobject],
                line_factory=neural_net_connection_arrow) -> list[VMobject]:
-    """Get lines connecting the objects in from_ to the objects in to_."""
+    """Get lines connecting the objects in from_ to the objects in to_.
+
+    This creates all connections.
+    """
     lines = []
     for from_, to in product(from_objects, to_objects):
+        lines.append(line_factory(from_.get_critical_point(RIGHT), to.get_critical_point(LEFT)))
+    return lines
+
+
+def pair_arrows(from_objects: Iterable[VMobject], to_objects: Iterable[VMobject],
+                line_factory=neural_net_connection_arrow) -> list[VMobject]:
+    """Get lines connecting the objects in from_ to the objects in to_.
+
+    This creates just the pairwise connections. So
+    `len(from_objects) == len(to_objects)` is assumed.
+    """
+    lines = []
+    for from_, to in zip(from_objects, to_objects):
         lines.append(line_factory(from_.get_critical_point(RIGHT), to.get_critical_point(LEFT)))
     return lines
 
@@ -513,8 +529,8 @@ class LinearToNonLinear(Slide):
 
         x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2,
                                                              perceptron_3))
-        output_lines = all_arrows((perceptron, perceptron_2, perceptron_3),
-                                  (output_label, output_label_2, output_label_3))
+        output_lines = pair_arrows((perceptron, perceptron_2, perceptron_3),
+                                   (output_label_2, output_label_3, output_label))
         perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
                                         x_label, y_label, z_label,
                                         *x_y_lines, output_label, output_label_2, output_label_3,
@@ -591,10 +607,10 @@ class LinearToNonLinear(Slide):
         x_y_lines = (
             all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2, perceptron_3))
             + all_arrows((perceptron, perceptron_2, perceptron_3),
-                         (perceptron_2_1, perceptron_2_2, perceptron_2_3))
+                         (perceptron_2_3, perceptron_2_2, perceptron_2_1))
         )
-        output_lines = all_arrows((perceptron_2_1, perceptron_2_2, perceptron_2_3),
-                                  (output_label, output_label_2, output_label_3))
+        output_lines = pair_arrows((perceptron_2_1, perceptron_2_2, perceptron_2_3),
+                                   (output_label_2, output_label_3, output_label))
         perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
                                         perceptron_2_1, perceptron_2_2, perceptron_2_3,
                                         x_label, y_label, z_label,
