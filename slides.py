@@ -617,11 +617,20 @@ class LinearToNonLinear(Slide):
                                         *x_y_lines, output_label, output_label_2, output_label_3,
                                         *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
-        self.play(TransformMatchingShapes(regressor_matrix_formula,
+
+        new_title = Text('Neural Network').to_edge(UP)
+        self.play(AnimationGroup(Unwrite(title), Write(new_title, reverse=True), lag_ratio=0.6),
+                  TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
                   TransformMatchingShapes(function_def, function_def_multi),
                   FadeTransform(perceptron_group, perceptron_group_multi))
         regressor_matrix_formula = regressor_matrix_formula_multi
         function_def = function_def_multi
         perceptron_group = perceptron_group_multi
+        # Unwrite with(out) reverse is apparently bugged. So I write
+        # reverse instead (it's almost more classy this way anyway), but
+        # writing in reverse is also buggy, causing the text to
+        # disappear immediately after the animation. Add the title here
+        # to prevent this from happening.
+        self.add(new_title)
         self.next_slide()
