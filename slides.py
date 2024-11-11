@@ -559,9 +559,9 @@ class LinearToNonLinear(Slide):
         perceptron = Circle(0.2)
         perceptron_2 = Circle(0.2).shift(DOWN)
         perceptron_3 = Circle(0.2).shift(UP)
-        perceptron_2_1 = Circle(0.2).shift(RIGHT)
-        perceptron_2_2 = Circle(0.2).shift(DR)
-        perceptron_2_3 = Circle(0.2).shift(UR)
+        perceptron_2_1 = Circle(0.2).shift(2 * RIGHT)
+        perceptron_2_2 = Circle(0.2).shift(DR + RIGHT)
+        perceptron_2_3 = Circle(0.2).shift(UR + RIGHT)
 
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
