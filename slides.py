@@ -313,8 +313,15 @@ class Logistic(ThreeDSlide):
         self.next_slide()
 
 
+def neural_net_connection_arrow(*args, **kwargs) -> Arrow:
+    """Build an arrow suitable for neural net links."""
+    return Arrow(*args, stroke_width=5,  # Fixed line width
+            tip_length=0.15,  # Fixed tip length
+            max_tip_length_to_length_ratio=1, **kwargs)
+
+
 def all_arrows(from_objects: Iterable[VMobject], to_objects: Iterable[VMobject],
-               line_factory=Arrow) -> list[VMobject]:
+               line_factory=neural_net_connection_arrow) -> list[VMobject]:
     """Get lines connecting the objects in from_ to the objects in to_."""
     lines = []
     for from_, to in product(from_objects, to_objects):
@@ -392,8 +399,8 @@ class LinearToNonLinear(Slide):
         output_label.font_size = formula_font_size
         output_label.next_to(perceptron, RIGHT).shift(RIGHT)
         x_y_lines = all_arrows((x_label, y_label), (perceptron,))
-        output_line = Arrow(perceptron.get_critical_point(RIGHT),
-                            output_label.get_critical_point(LEFT))
+        output_line = neural_net_connection_arrow(perceptron.get_critical_point(RIGHT),
+                                                  output_label.get_critical_point(LEFT))
         perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines,
                                   output_label, output_line).to_edge(LEFT).shift(perceptron_group_shift)
 
