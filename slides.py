@@ -690,3 +690,29 @@ class WhyNeuralNetworks(Slide):
         static_slide(self)
         self.add(why_title)
         self.next_slide()
+
+        ## Slide: why logistic regressors
+        why_title_colon = Text('Why:').to_corner(UL)
+        title = Text('Logistic Regression').to_edge(UP)
+
+        # Prepare body
+        intuitive_text = Text('Intuitive', font_size=body_text_size)
+        lightweight_text = Text('Lightweight', font_size=body_text_size)
+        prob_output_text = Text('Probabilistic output', font_size=body_text_size)
+        logistic_regression_body = VGroup(intuitive_text, lightweight_text, prob_output_text)
+        logistic_regression_body.arrange(3 * DOWN, aligned_edge=LEFT).shift(3 * LEFT)
+
+        self.play(TransformMatchingShapes(why_title, why_title_colon, transform_mismatches=True),
+                  Write(title))
+
+        ## Slide: intuitive
+        self.play(Write(intuitive_text))
+        self.next_slide()
+        ## Slide: lightweight
+        self.play(Write(lightweight_text))
+        self.next_slide()
+        ## Slide: probabilistic output
+        self.play(Write(prob_output_text))
+        self.next_slide()
+
+        self.next_slide()
