@@ -677,3 +677,16 @@ class LinearToNonLinear(Slide):
         # TODO: if we have time, show also the network expansion
 
         self.next_slide()
+
+
+class WhyNeuralNetworks(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+        body_text_size = 30
+
+        ## Slide: title
+        why_title = Text('Why?')
+        static_slide(self)
+        self.add(why_title)
+        self.next_slide()
