@@ -740,3 +740,33 @@ class WhyNeuralNetworks(Slide):
 
         self.play(FadeIn(universal_approximators_text, shift=UP))
         self.next_slide()
+
+        universal_approximators_morphing_text = Tex(
+            r'''
+            {0.7\textwidth}{\Large Multilayer feedforward networks are universal approximators}
+            ''',
+            font_size=40,
+            tex_environment='minipage',
+        ).move_to(universal_approximators_text, aligned_edge=UP)
+
+        # To make the transition smooth, keep the same text style for next points
+        flexibility_text = Tex(
+            r'''
+            {0.7\textwidth}{\Large Flexibility}
+            ''',
+            font_size=40,
+            tex_environment='minipage',
+        ).move_to(universal_approximators_text, aligned_edge=UL).shift(2 * DOWN)
+
+        prob_output_text = Tex(
+            r'''
+            {0.7\textwidth}{\Large Probabilistic output}
+            ''',
+            font_size=40,
+            tex_environment='minipage',
+        ).move_to(flexibility_text, aligned_edge=UL).shift(2 * DOWN)
+
+        self.play(TransformMatchingShapes(universal_approximators_text,
+                                          universal_approximators_morphing_text))
+        self.play(Write(flexibility_text), Write(prob_output_text))
+        self.next_slide()
