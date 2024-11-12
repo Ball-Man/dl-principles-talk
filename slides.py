@@ -633,6 +633,7 @@ class LinearToNonLinear(Slide):
         # disappear immediately after the animation. Add the title here
         # to prevent this from happening.
         self.add(new_title)
+        title = new_title
         self.next_slide()
 
         ## Slide: let's simplify
@@ -642,5 +643,37 @@ class LinearToNonLinear(Slide):
 
         self.play(TransformMatchingShapes(regressor_matrix_formula_multi,
                                           regressor_concise_formula))
+
+        self.next_slide()
+
+        ## Slide: going deep
+        new_title = Text('Deep Neural Network').to_edge(UP)
+        regressor_concise_formula_deep1 = MathTex(
+            r'f(v) = \sigma(\,W_3\: \sigma(\,W_2\: \sigma(\,W_1 v\,)\,)\,)'
+        ).to_edge(LEFT).shift(matrix_form_shift)
+        regressor_concise_formula_deep2 = MathTex(
+            r'f(v) = \sigma(\,W_4\:\sigma(\,W_3\: \sigma(\,W_2\: \sigma(\,W_1 v\,)\,)\,)\,)'
+        ).to_edge(LEFT).shift(matrix_form_shift)
+        regressor_concise_formula_deep3 = MathTex(
+            r'''
+            f(v) = \sigma(\,W_5\: \sigma(\,W_4\: \sigma(\,W_3\: \sigma(\,W_2\: \sigma(\,W_1 v\,)
+            \,)\,)\,)\,)
+            '''
+        ).to_edge(LEFT).shift(matrix_form_shift)
+
+        self.play(FadeTransform(title, new_title),
+                  TransformMatchingShapes(regressor_concise_formula,
+                                          regressor_concise_formula_deep1),
+                  FadeOut(perceptron_group))
+        self.play(AnimationGroup(Wait(0.5),
+                                 TransformMatchingShapes(regressor_concise_formula_deep1,
+                                                         regressor_concise_formula_deep2),
+                                 lag_ratio=1))
+        self.play(AnimationGroup(Wait(0.5),
+                                 TransformMatchingShapes(regressor_concise_formula_deep2,
+                                                         regressor_concise_formula_deep3),
+                                 lag_ratio=1))
+
+        # TODO: if we have time, show also the network expansion
 
         self.next_slide()
