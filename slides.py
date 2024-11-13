@@ -728,7 +728,8 @@ class WhyNeuralNetworks(Slide):
             {\tiny Kurt Hornik, Maxwell Stinchcombe, Halbert White (1989)}
 
             { This paper rigorously establishes that standard multilayer feedforward networks with
-            as few as \emph{\textbf{one hidden layer}} using \emph{\textbf{arbitrary squashing functions}} are capable of
+            as few as \emph{\textbf{one hidden layer}} using
+            \emph{\textbf{arbitrary squashing functions}} are capable of
             approximating any Borel measurable function from one finite dimensional space to
             another to any desired degree of accuracy, provided sufficiently many hidden
             units are available. In this sense, multilayer feedforward networks are a class of
