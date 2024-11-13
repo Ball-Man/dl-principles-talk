@@ -771,3 +771,27 @@ class WhyNeuralNetworks(Slide):
                                           universal_approximators_morphing_text))
         self.play(Write(flexibility_text), Write(prob_output_text))
         self.next_slide()
+
+
+class Criterion(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+
+        ## Slide: title
+        title = Text('How to Train Your Network')
+        self.add(title)
+        static_slide(self)
+        self.next_slide()
+
+        ## Slide: a network
+        function_def = MathTex(r'f: \mathbb{R} \to \mathbb{R}').shift(UP)
+        regressor_formula = MathTex(
+            r'''
+            f(x) = \sigma(\,W_2\: \sigma(\,W_1 x\,)\,)
+            '''
+        )
+
+        self.play(FadeOut(title))
+        self.play(Write(function_def), Write(regressor_formula))
+        self.next_slide()
