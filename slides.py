@@ -1,5 +1,6 @@
 from itertools import chain, product
 from collections.abc import Iterable
+from functools import partial
 
 import numpy as np
 from manim import *
@@ -773,6 +774,17 @@ class WhyNeuralNetworks(Slide):
         self.next_slide()
 
 
+def grid_position(x_index, y_index, horizontal_spacing=RIGHT,
+                  vertical_spacing=DOWN, origin=ORIGIN) -> np.ndarray:
+    """Get grid position given table space coordinates."""
+    return origin + x_index * horizontal_spacing + y_index * vertical_spacing
+
+
+def place_in_grid(obj: Mobject, x_index, y_index, *args, aligned_edge=RIGHT, **kwargs) -> Mobject:
+    """Move an object in a grid position given table space coordinates."""
+    return obj.move_to(grid_position(x_index, y_index, *args, **kwargs), aligned_edge=aligned_edge)
+
+
 class Criterion(Slide):
 
     def construct(self):
@@ -794,4 +806,41 @@ class Criterion(Slide):
 
         self.play(FadeOut(title))
         self.play(Write(function_def), Write(regressor_formula))
+        self.next_slide()
+
+        ## Slide: the data
+        # Define data
+        data = np.array(((-2, 1, 14, -7, 5), (1, 0, 0, 1, 0)))
+
+        # Define grid
+        local_grid_config = {'origin': UP + 5 * LEFT, 'horizontal_spacing': 1.5 * RIGHT}
+        local_grid = partial(place_in_grid, **local_grid_config)
+        local_grid_position = partial(grid_position, **local_grid_config)
+
+        table_group = VGroup()
+
+        # Prepare header
+        header_line = Line(local_grid_position(-1, -0.5), local_grid_position(5, -0.5))
+        lines_group = VGroup(header_line)
+
+        table_group.add(
+            # Add header labels
+            local_grid(MathTex('x'), 0, -1),
+            local_grid(MathTex('y'), 1, -1))
+
+        # Populate table with initial data
+        for y_index, (x, y) in enumerate(data.T):
+            table_group.add(local_grid(MathTex(str(x)), 0, y_index))
+            table_group.add(local_grid(MathTex(str(y)), 1, y_index))
+
+        for x_index, _ in enumerate(data):
+            column_line = Line(local_grid_position(x_index + 0.5, -1.5),
+                               local_grid_position(x_index + 0.5, data.shape[1]))
+            lines_group.add(column_line)
+
+        self.play(AnimationGroup(function_def.animate.to_corner(UL),
+                                 regressor_formula.animate.to_edge(UP),
+                                 lag_ratio=0.1))
+        self.play(Create(lines_group, lag_ratio=0.2))
+        self.play(Write(table_group))
         self.next_slide()
