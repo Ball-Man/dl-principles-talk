@@ -811,6 +811,7 @@ class Criterion(Slide):
         ## Slide: the data
         # Define data
         data = np.array(((-2, 1, 14, -7, 5), (1, 0, 0, 1, 0)))
+        label_map = ['A', 'B']
 
         # Define grid
         local_grid_config = {'origin': UP + 5 * LEFT, 'horizontal_spacing': 1.5 * RIGHT}
@@ -828,10 +829,14 @@ class Criterion(Slide):
             local_grid(MathTex('x'), 0, -1),
             local_grid(MathTex('y'), 1, -1))
 
+        labels_columns_group = VGroup()         # Used later to morph these
+
         # Populate table with initial data
         for y_index, (x, y) in enumerate(data.T):
             table_group.add(local_grid(MathTex(str(x)), 0, y_index))
-            table_group.add(local_grid(MathTex(str(y)), 1, y_index))
+            y_label = local_grid(MathTex(label_map[y]), 1, y_index, aligned_edge=ORIGIN)
+            labels_columns_group.add(y_label)
+            table_group.add(y_label)
 
         for x_index, _ in enumerate(data):
             column_line = Line(local_grid_position(x_index + 0.5, -1.5),
@@ -843,4 +848,13 @@ class Criterion(Slide):
                                  lag_ratio=0.1))
         self.play(Create(lines_group, lag_ratio=0.2))
         self.play(Write(table_group))
+        self.next_slide()
+
+        ## Slide: from class label to 0-1
+        numeric_labels_columns = VGroup(
+            *(local_grid(MathTex(str(y)), 1, y_index, aligned_edge=ORIGIN)
+              for y_index, y in enumerate(data[1]))
+        )
+
+        self.play(FadeTransform(labels_columns_group, numeric_labels_columns))
         self.next_slide()
