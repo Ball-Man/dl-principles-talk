@@ -873,3 +873,16 @@ class Criterion(Slide):
                   TransformMatchingShapes(regressor_formula.submobjects[0].copy(), fx_header))
         self.play(Write(predictions_column_group))
         self.next_slide()
+
+        ## Slide: criterion
+        criterion_results = np.abs(data[1] - predictions)
+        print(criterion_results)
+
+        criterion = local_grid(MathTex('l(x, y) = |f(x) - y|'), 2.75, -1, aligned_edge=LEFT)
+        criterion_results_group = VGroup()
+        for y_index, criterion_value in enumerate(criterion_results):
+            criterion_results_group.add(local_grid(MathTex(f'{criterion_value:.2f}'), 3, y_index,
+                                                   aligned_edge=ORIGIN))
+
+        self.play(Write(criterion), Write(criterion_results_group))
+        self.next_slide()
