@@ -798,11 +798,8 @@ class Criterion(Slide):
 
         ## Slide: a network
         function_def = MathTex(r'f: \mathbb{R} \to \mathbb{R}').shift(UP)
-        regressor_formula = MathTex(
-            r'''
-            f(x) = \sigma(\,W_2\: \sigma(\,W_1 x\,)\,)
-            '''
-        )
+        regressor_formula = MathTex(r'f(x) = \sigma(\,W_2\: \sigma(\,W_1 x\,)\,)',
+                                    substrings_to_isolate=['f(x)'])
 
         self.play(FadeOut(title))
         self.play(Write(function_def), Write(regressor_formula))
@@ -857,4 +854,22 @@ class Criterion(Slide):
         )
 
         self.play(FadeTransform(labels_columns_group, numeric_labels_columns))
+        self.next_slide()
+
+        ## Slide: predictions
+        predictions = np.array([0.92, 0.4, 0.12, 0.7, 0.9])
+
+        prediction_line = Line(local_grid_position(2.5, -1.5),
+                               local_grid_position(2.5, data.shape[1]))
+        lines_group.add(prediction_line)
+
+        fx_header = local_grid(MathTex('f(x)'), 2, -1, aligned_edge=ORIGIN)
+        predictions_column_group = VGroup()
+        for y_index, prediction in enumerate(predictions):
+            predictions_column_group.add(local_grid(MathTex(str(prediction)), 2, y_index,
+                                                    aligned_edge=ORIGIN))
+
+        self.play(Create(prediction_line),
+                  TransformMatchingShapes(regressor_formula.submobjects[0].copy(), fx_header))
+        self.play(Write(predictions_column_group))
         self.next_slide()
