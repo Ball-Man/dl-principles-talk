@@ -878,11 +878,17 @@ class Criterion(Slide):
         criterion_results = np.abs(data[1] - predictions)
         print(criterion_results)
 
-        criterion = local_grid(MathTex('l(x, y) = |f(x) - y|'), 2.75, -1, aligned_edge=LEFT)
+        criterion = local_grid(MathTex('l_f(x, y) = |f(x) - y|'), 2.75, -1, aligned_edge=LEFT)
         criterion_results_group = VGroup()
         for y_index, criterion_value in enumerate(criterion_results):
             criterion_results_group.add(local_grid(MathTex(f'{criterion_value:.2f}'), 3, y_index,
                                                    aligned_edge=ORIGIN))
+
+        reduced_criterion = local_grid(
+            MathTex(f'\sum_{{x, y}} l_f(x, y) = {criterion_results.sum():.2f}'),
+            4, 2, aligned_edge=LEFT)
+        reduction_arrow_group = VGroup(*all_arrows(criterion_results_group.submobjects,
+                                                   reduced_criterion))
 
         self.play(Write(criterion), Write(criterion_results_group))
         self.next_slide()
