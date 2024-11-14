@@ -854,6 +854,8 @@ class Criterion(Slide):
         )
 
         self.play(FadeTransform(labels_columns_group, numeric_labels_columns))
+        table_group.remove(*labels_columns_group.submobjects)
+        table_group.add(*numeric_labels_columns.submobjects)
         self.next_slide()
 
         ## Slide: predictions
@@ -885,10 +887,22 @@ class Criterion(Slide):
                                                    aligned_edge=ORIGIN))
 
         reduced_criterion = local_grid(
-            MathTex(f'\sum_{{x, y}} l_f(x, y) = {criterion_results.sum():.2f}'),
+            MathTex(f'{{{{ \sum_{{x, y}} l_f(x, y) }}}} = {criterion_results.sum():.2f}'),
             4, 2, aligned_edge=LEFT)
         reduction_arrow_group = VGroup(*all_arrows(criterion_results_group.submobjects,
-                                                   reduced_criterion))
+                                                   (reduced_criterion,)))
 
         self.play(Write(criterion), Write(criterion_results_group))
+        self.play(Create(reduction_arrow_group), Write(reduced_criterion))
+        self.next_slide()
+
+        ## Slide: objective
+        objective = MathTex(r'\min_{W_1, W_2} {{ \sum_{x, y} l_f(x, y) }}').shift(DOWN)
+        objective_highlight = SurroundingRectangle(objective)
+
+        self.play(FadeOut(lines_group), FadeOut(table_group), FadeOut(predictions_column_group),
+                  FadeOut(reduction_arrow_group), FadeOut(criterion_results_group),
+                  FadeOut(fx_header))
+        self.play(TransformMatchingTex(reduced_criterion, objective), criterion.animate.move_to(UP))
+        self.play(Create(objective_highlight))
         self.next_slide()
