@@ -916,6 +916,8 @@ class GradientDescent(ThreeDSlide):
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
+        local_minima_color = RED
+
         title = Text('Finding minima:\nGradient Descent')
         self.add(title)
         static_slide(self)
@@ -939,6 +941,19 @@ class GradientDescent(ThreeDSlide):
         self.play(FadeOut(title))
         self.play(Write(plane))
         self.play(Write(function_plot))
+
+        self.next_slide()
+
+        local_argmin = plane.c2p(local_minimum_1, 0, 0)
+        on_plot_local_argmin = plane.i2gp(local_minimum_1, function_plot)
+        local_minima_dot = Dot(local_argmin, color=local_minima_color)
+
+        self.play(Create(local_minima_dot))
+        # self.play(local_minima_dot.animate.move_to(on_plot_local_argmin))
+        self.play(Transform(local_minima_dot,
+                            Line(on_plot_local_argmin + LEFT * 10,
+                                 on_plot_local_argmin + RIGHT * 10,
+                                 color=local_minima_color)))
 
         self.next_slide()
 
