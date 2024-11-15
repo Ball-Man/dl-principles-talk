@@ -906,3 +906,14 @@ class Criterion(Slide):
         self.play(TransformMatchingTex(reduced_criterion, objective), criterion.animate.move_to(UP))
         self.play(Create(objective_highlight))
         self.next_slide()
+
+
+class GradientDescent(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+
+        title = Text('Finding minima:\nGradient Descent')
+        self.add(title)
+        static_slide(self)
+        self.next_slide()
