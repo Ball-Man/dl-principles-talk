@@ -924,16 +924,22 @@ class GradientDescent(ThreeDSlide):
         self.next_slide()
 
         # x, y pairs
-        f_pairwise = ((-2, 2), (1, 4), (5, 3), (6, 1), (9, 5), (10, 4), (12, 5), (1_000_000, 3))
+        f_pairwise = ((-2, 2), (1, 4), (5, 3), (6, 1), (9, 5), (10, 4), (12, 5),
+                      (15, 3,), (15.5, 3.5), (16, 2), (17, 0.5),
+                      (19, 4), (21, 5), (22, 10), (27, 0), (27.5, 1), (28, -0.5), (30, 3),
+                      (33, -2),
+                      (1_000_000, -100))
         x_points, f_values = zip(*f_pairwise)
 
         # Create a cubic spline interpolator
         f = scipy.interpolate.interp1d(x_points, f_values, kind='cubic')
         local_minimum_1 = scipy.optimize.minimize_scalar(f, bounds=(6, 6.5), method='bounded').x
+        local_minimum_2 = scipy.optimize.minimize_scalar(f, bounds=(16, 17), method='bounded').x
 
-        plot_range_x = (-1.5, 40)
+
+        plot_range_x = (-1.5, 50)
         plot_range_y = (-1.5, 10)
-        plane = NumberPlane(plot_range_x, plot_range_y, x_length=40, y_length=10)
+        plane = NumberPlane(plot_range_x, plot_range_y, x_length=50, y_length=10)
         plane.to_corner(DL, 0)
         plane.add_coordinates()
         function_plot = plane.plot(f)
@@ -957,5 +963,20 @@ class GradientDescent(ThreeDSlide):
 
         self.next_slide()
 
-        self.move_camera(frame_center=10 * RIGHT)
+        ## Slide: slide and show a minimum
+        camera_shift = 10 * RIGHT
+        self.move_camera(frame_center=camera_shift,
+                         added_anims=[local_minima_dot.animate.shift(camera_shift)])
+        self.next_slide()
+
+        ## Slide: move bar to the new minimum
+        on_plot_local_argmin_2 = plane.i2gp(local_minimum_2, function_plot)
+        self.play(local_minima_dot.animate.move_to(on_plot_local_argmin_2))
+        self.next_slide()
+
+        ## Slide: move camera again and show that it is really bad
+        camera_shift *= 2.5
+        self.move_camera(zoom=0.8, frame_center=camera_shift, run_time=6,
+                         added_anims=[local_minima_dot.animate.shift(15 * RIGHT)])
+        self.move_camera(frame_center=ORIGIN, zoom=1, added_anims=[FadeOut(local_minima_dot)])
         self.next_slide()
