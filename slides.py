@@ -917,6 +917,7 @@ class GradientDescent(ThreeDSlide):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
         local_minima_color = RED
+        body_font_size = 30
 
         title = Text('Finding minima:\nGradient Descent')
         self.add(title)
@@ -979,4 +980,19 @@ class GradientDescent(ThreeDSlide):
         self.move_camera(zoom=0.8, frame_center=camera_shift, run_time=6,
                          added_anims=[local_minima_dot.animate.shift(15 * RIGHT)])
         self.move_camera(frame_center=ORIGIN, zoom=1, added_anims=[FadeOut(local_minima_dot)])
+        self.next_slide()
+
+        ## Slide: cover a bit with black to write things, and write
+        cover_rectangle = Rectangle()
+        cover_rectangle.stretch_to_fit_width(16)
+        cover_rectangle.to_corner(UL, 0.)
+        cover_rectangle.set_stroke(opacity=0.)
+        cover_rectangle.set_fill(config.background_color, 1.)
+
+        minima_hard_text = Text('Global minima are hard, let\'s keep it local', font_size=30)
+        minima_hard_text.to_corner(UL)
+
+        self.play(Create(cover_rectangle))
+        self.play(Write(minima_hard_text))
+
         self.next_slide()
