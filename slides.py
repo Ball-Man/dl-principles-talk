@@ -1,8 +1,11 @@
 from itertools import chain, product
-from collections.abc import Iterable
+from collections.abc import Iterable, Callable
 from functools import partial
 
 import numpy as np
+import scipy.interpolate
+import scipy.optimize
+
 from manim import *
 from manim_slides.slide import Slide, ThreeDSlide
 
@@ -908,7 +911,7 @@ class Criterion(Slide):
         self.next_slide()
 
 
-class GradientDescent(Slide):
+class GradientDescent(ThreeDSlide):
 
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
@@ -916,4 +919,28 @@ class GradientDescent(Slide):
         title = Text('Finding minima:\nGradient Descent')
         self.add(title)
         static_slide(self)
+        self.next_slide()
+
+        # x, y pairs
+        f_pairwise = ((-2, 2), (1, 4), (5, 3), (6, 1), (9, 5), (10, 4), (12, 5), (1_000_000, 3))
+        x_points, f_values = zip(*f_pairwise)
+
+        # Create a cubic spline interpolator
+        f = scipy.interpolate.interp1d(x_points, f_values, kind='cubic')
+        local_minimum_1 = scipy.optimize.minimize_scalar(f, bounds=(6, 6.5), method='bounded').x
+
+        plot_range_x = (-1.5, 40)
+        plot_range_y = (-1.5, 10)
+        plane = NumberPlane(plot_range_x, plot_range_y, x_length=40, y_length=10)
+        plane.to_corner(DL, 0)
+        plane.add_coordinates()
+        function_plot = plane.plot(f)
+
+        self.play(FadeOut(title))
+        self.play(Write(plane))
+        self.play(Write(function_plot))
+
+        self.next_slide()
+
+        self.move_camera(frame_center=10 * RIGHT)
         self.next_slide()
