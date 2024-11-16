@@ -993,7 +993,7 @@ class GradientDescent(ThreeDSlide):
         cover_rectangle.set_stroke(opacity=0.)
         cover_rectangle.set_fill(config.background_color, 1.)
 
-        minima_hard_text = Text('Global minima are hard, let\'s keep it local', font_size=30)
+        minima_hard_text = Tex('Global minima are hard, let\'s keep it local', font_size=30)
         minima_hard_text.to_corner(UL)
 
         self.play(Create(cover_rectangle))
@@ -1094,3 +1094,15 @@ class GradientDescent(ThreeDSlide):
         # self.play(pointed_x.animate.set_value(local_minimum_shallow))
         # self.move_camera(frame_center=4 * RIGHT)
         # self.next_slide()
+
+        ## Slide: gradient descent
+        gradient_descent_text = Tex(r'{{ Gradient }} Descent', font_size=body_font_size)
+        gradient_descent_text.next_to(minima_hard_text, DOWN, aligned_edge=LEFT)
+        self.play(Write(gradient_descent_text))
+        self.next_slide()
+
+        ## Slide: gradient
+        gradient_text = Tex(r'{{ Gradient }} = Slopes on drugs', font_size=body_font_size)
+        gradient_text.next_to(minima_hard_text, DOWN, aligned_edge=LEFT)
+        self.play(TransformMatchingTex(gradient_descent_text, gradient_text, False))
+        self.next_slide()
