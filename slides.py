@@ -934,7 +934,8 @@ class GradientDescent(ThreeDSlide):
         x_points, f_values = zip(*f_pairwise)
 
         # Create a cubic spline interpolator
-        f = scipy.interpolate.interp1d(x_points, f_values, kind='cubic')
+        f = scipy.interpolate.InterpolatedUnivariateSpline(x_points, f_values)
+        f_d = f.derivative()
         local_minimum_1 = scipy.optimize.minimize_scalar(f, bounds=(6, 6.5), method='bounded').x
         local_minimum_2 = scipy.optimize.minimize_scalar(f, bounds=(16, 17), method='bounded').x
 
