@@ -938,6 +938,9 @@ class GradientDescent(ThreeDSlide):
         f_d = f.derivative()
         local_minimum_1 = scipy.optimize.minimize_scalar(f, bounds=(6, 6.5), method='bounded').x
         local_minimum_2 = scipy.optimize.minimize_scalar(f, bounds=(16, 17), method='bounded').x
+        local_minimum_shallow = scipy.optimize.minimize_scalar(f, bounds=(9, 11),
+                                                               method='bounded').x
+
 
         plot_range_x = (-1.5, 50)
         plot_range_y = (-1.5, 10)
@@ -1064,3 +1067,30 @@ class GradientDescent(ThreeDSlide):
 
         self.play(pointed_x.animate.set_value(local_minimum_1))
         self.next_slide()
+
+        ## Slide: new point, from left
+        slope_line.remove_updater(slope_updater)
+        self.play(FadeOut(slope_line), FadeOut(current_dot))
+        pointed_x.set_value(4)
+        slope_updater(slope_line)
+        self.play(FadeIn(current_dot), FadeIn(slope_line))
+        slope_line.add_updater(slope_updater)
+        self.next_slide()
+
+        ## Slide: descent, from left
+        self.play(pointed_x.animate.set_value(local_minimum_1))
+        self.next_slide()
+
+        ## Slide: new point, in the small valley
+        # slope_line.remove_updater(slope_updater)
+        # self.play(FadeOut(slope_line), FadeOut(current_dot))
+        # pointed_x.set_value(9)
+        # slope_updater(slope_line)
+        # self.play(FadeIn(current_dot), FadeIn(slope_line))
+        # slope_line.add_updater(slope_updater)
+        # self.next_slide()
+
+        # ## Slide: descent, in the small valley
+        # self.play(pointed_x.animate.set_value(local_minimum_shallow))
+        # self.move_camera(frame_center=4 * RIGHT)
+        # self.next_slide()
