@@ -1046,9 +1046,20 @@ class GradientDescent(ThreeDSlide):
         ## Slide: back to original view
         self.move_camera(frame_center=ORIGIN , zoom=1,
                          added_anims=[slope_line.animate.move_to(current_dot),
+                                      FadeOut(slope_tip),
                                       FadeOut(slope_sel_1), FadeOut(slope_sel_2)])
         self.play(slope_line.animate.set_length(1))
 
-        # self.play(pointed_x.animate.set_value(local_minimum_1))
+        ## Slide: descend
+        # Update the line so that it always reflects the real slope from now on
+        def slope_updater(line: Line):
+            angle = np.arctan(f_d(pointed_x.get_value()))
+            # For convenience, build the line at origin with unitary
+            # size, then move it.
+            line.become(Line(ORIGIN, ORIGIN + np.array([np.cos(angle), np.sin(angle), 0]),
+                             stroke_width=6, color=slope_color)
+                        .move_to(plane.i2gp(pointed_x.get_value(), function_plot)))
+        slope_line.add_updater(slope_updater)
 
+        self.play(pointed_x.animate.set_value(local_minimum_1))
         self.next_slide()
