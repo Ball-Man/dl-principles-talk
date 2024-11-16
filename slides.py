@@ -1026,6 +1026,8 @@ class GradientDescent(ThreeDSlide):
         slope_tip = (ArrowTriangleTip(fill_opacity=1, stroke_width=0, width=0.2, color=slope_color)
                      .move_to(example_slope_on_curve_1)
                      .rotate(PI + example_slope_dir))
+        # Fix tip to the line
+        slope_tip.add_updater(lambda tip: tip.move_to(slope_line.get_start()))
 
         self.move_camera(frame_center=current_dot , zoom=2)
         self.next_slide()
@@ -1040,6 +1042,11 @@ class GradientDescent(ThreeDSlide):
         self.play(Create(slope_tip))
         self.next_slide()
 
+        ## Slide: back to original view
+        self.move_camera(frame_center=ORIGIN , zoom=1,
+                         added_anims=[slope_line.animate.move_to(current_dot),
+                                      FadeOut(slope_sel_1), FadeOut(slope_sel_2)])
+        self.play(slope_line.animate.set_length(1))
 
         # self.play(pointed_x.animate.set_value(local_minimum_1))
 
