@@ -917,6 +917,7 @@ class GradientDescent(ThreeDSlide):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
         local_minima_color = RED
+        slope_color = YELLOW
         body_font_size = 30
 
         title = Text('Finding minima:\nGradient Descent')
@@ -936,7 +937,6 @@ class GradientDescent(ThreeDSlide):
         f = scipy.interpolate.interp1d(x_points, f_values, kind='cubic')
         local_minimum_1 = scipy.optimize.minimize_scalar(f, bounds=(6, 6.5), method='bounded').x
         local_minimum_2 = scipy.optimize.minimize_scalar(f, bounds=(16, 17), method='bounded').x
-
 
         plot_range_x = (-1.5, 50)
         plot_range_y = (-1.5, 10)
@@ -994,5 +994,53 @@ class GradientDescent(ThreeDSlide):
 
         self.play(Create(cover_rectangle))
         self.play(Write(minima_hard_text))
+
+        self.next_slide()
+
+        ## Slide: Choose a point
+        pointed_x = ValueTracker(8)
+        current_location = plane.i2gp(pointed_x.get_value(), function_plot)
+        current_dot = Dot(color=local_minima_color).move_to(current_location)
+
+        self.play(FadeIn(current_dot, target_position=current_location + 3 * UP))
+        self.next_slide()
+
+        ## Slides: show dot and slope
+        current_dot.add_updater(lambda dot: dot.move_to(plane.i2gp(pointed_x.get_value(),
+                                                                   function_plot)))
+        example_slope_x1 = 7.3
+        example_slope_x2 = 8.7
+        example_slope_on_curve_1 = plane.i2gp(example_slope_x1, function_plot)
+        example_slope_on_curve_2 = plane.i2gp(example_slope_x2, function_plot)
+
+        slope_from_1 = example_slope_on_curve_1 - UP * 2
+        slope_from_2 = example_slope_on_curve_2 - UP * 4
+        slope_sel_1 = DashedLine(slope_from_1, example_slope_on_curve_1, color=slope_color)
+        slope_sel_2 = DashedLine(slope_from_2, example_slope_on_curve_2, color=slope_color)
+        slope_line = Line(example_slope_on_curve_1, example_slope_on_curve_2, stroke_width=6,
+                          color=slope_color)
+
+        example_slope_dir_vec = example_slope_on_curve_1 - example_slope_on_curve_2
+        example_slope_dir = np.arctan2(example_slope_dir_vec[1], example_slope_dir_vec[0])
+
+        slope_tip = (ArrowTriangleTip(fill_opacity=1, stroke_width=0, width=0.2, color=slope_color)
+                     .move_to(example_slope_on_curve_1)
+                     .rotate(PI + example_slope_dir))
+
+        self.move_camera(frame_center=current_dot , zoom=2)
+        self.next_slide()
+
+        self.play(Create(slope_sel_1))
+        self.play(Create(slope_sel_2))
+        self.next_slide()
+
+        self.play(Create(slope_line))
+        self.next_slide()
+
+        self.play(Create(slope_tip))
+        self.next_slide()
+
+
+        # self.play(pointed_x.animate.set_value(local_minimum_1))
 
         self.next_slide()
