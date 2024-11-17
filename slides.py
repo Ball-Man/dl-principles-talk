@@ -1115,6 +1115,18 @@ class BackProp(ThreeDSlide):
 
         body_font_size = 30
 
+        # x, y pairs
+        f_pairwise = ((-2, 2), (1, 4), (5, 3), (6, 1), (9, 5), (10, 4), (12, 5),
+                      (15, 3,), (15.5, 3.5), (16, 2), (17, 0.5),
+                      (19, 4), (21, 5), (22, 10), (27, 0), (27.5, 1), (28, -0.5), (30, 3),
+                      (33, -2),
+                      (1_000_000, -100))
+        x_points, f_values = zip(*f_pairwise)
+
+        # Create a cubic spline interpolator
+        f = scipy.interpolate.InterpolatedUnivariateSpline(x_points, f_values)
+        f_d = f.derivative()
+
         ## Slide: title
         title = Text('Effective Training:\nInformation Flow')
         self.add(title)
@@ -1170,15 +1182,23 @@ class BackProp(ThreeDSlide):
                                         perceptron_2_1, perceptron_2_2, perceptron_2_3,
                                         x_label, y_label, z_label,
                                         *x_y_lines, output_label, output_label_2, output_label_3,
-                                        *output_lines).move_to(ORIGIN)
+                                        *output_lines).move_to(UP)
+
+        new_title = Text('Forward Propagation').to_edge(UP)
+
+        # Axes for later demonstration
+        ax = Axes((-1, 10), (-1, 10), x_length=10, y_length=3,
+                  x_axis_config={'include_ticks': False},
+                  y_axis_config={'include_ticks': False}).to_edge(DOWN, buff=0.1)
+        function_plot = ax.plot(f)          # Will be useful later
+        error_label = ax.get_y_axis_label('error')
 
         self.play(FadeOut(body_group))
-        self.play(Write(perceptron_group_multi))
+        self.play(title.animate.become(new_title), Write(perceptron_group_multi),
+                  Write(ax), Write(error_label))
         self.next_slide()
 
         ## Slide: forward flow
-        new_title = Text('Forward Propagation').to_edge(UP)
-
         def dots_for_transition(from_: list[VMobject], to: list[VMobject]):
             """Create all (pairwise) dots necessary to show a forward pass."""
             info_dots = [Dot().move_to(label) for _ in to for label in from_]
