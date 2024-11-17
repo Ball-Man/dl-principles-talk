@@ -1126,6 +1126,7 @@ class BackProp(ThreeDSlide):
         # Create a cubic spline interpolator
         f = scipy.interpolate.InterpolatedUnivariateSpline(x_points, f_values)
         f_d = f.derivative()
+        local_minimum_1 = scipy.optimize.minimize_scalar(f, bounds=(6, 6.5), method='bounded').x
 
         ## Slide: title
         title = Text('Effective Training:\nInformation Flow')
@@ -1187,7 +1188,10 @@ class BackProp(ThreeDSlide):
         new_title = Text('Forward Propagation').to_edge(UP)
 
         # Axes for later demonstration
-        ax = Axes((-1, 10), (-1, 10), x_length=10, y_length=3,
+        ax_x_length = 10
+        ax_y_length = 3
+        ax_ratio = ax_y_length / ax_x_length        # Assuming they cover the same range
+        ax = Axes((-1, 10), (-1, 10), x_length=ax_x_length, y_length=ax_y_length,
                   x_axis_config={'include_ticks': False},
                   y_axis_config={'include_ticks': False}).to_edge(DOWN, buff=0.1)
         function_plot = ax.plot(f)          # Will be useful later
@@ -1242,23 +1246,36 @@ class BackProp(ThreeDSlide):
         self.next_slide()
 
         ## Slide: backward flow
-        self.play(*(Uncreate(info_dot) for info_dot in out_dots))
+        backward_x_values = np.linspace(3, local_minimum_1, 4)
+        for x_value in backward_x_values:
+            # Dot chosen from the plot becomes the new backprop input
+            plot_dot = Dot(ax.i2gp(x_value, function_plot))
+            out_dots, out_targets = dots_for_output_transition(output_labels, layer_2)
+            backprop_input_group = VGroup(*out_dots)
 
-        out_dots, out_targets = dots_for_output_transition(output_labels, layer_2)
-        self.play(*(Create(info_dot) for info_dot in out_dots))
-        self.play(*(info_dot.animate.move_to(target)
-                    for info_dot, target in zip(out_dots, out_targets)))
+            self.play(Create(plot_dot))
+            self.play(ReplacementTransform(plot_dot, backprop_input_group))
+            self.play(*(info_dot.animate.move_to(target)
+                        for info_dot, target in zip(out_dots, out_targets)))
 
-        self.remove(*out_dots)
-        l2_dots, l2_targets = dots_for_transition(layer_2, layer_1)
-        self.add(*l2_dots)
-        self.play(*(info_dot.animate.move_to(target)
-                    for info_dot, target in zip(l2_dots, l2_targets)))
+            self.remove(*out_dots)
+            l2_dots, l2_targets = dots_for_transition(layer_2, layer_1)
+            self.add(*l2_dots)
+            self.play(*(info_dot.animate.move_to(target)
+                        for info_dot, target in zip(l2_dots, l2_targets)))
 
-        self.remove(*l2_dots)
-        l1_dots, l1_targets = dots_for_transition(layer_1, input_labels)
-        self.add(*l1_dots)
-        self.play(*(info_dot.animate.move_to(target)
-                    for info_dot, target in zip(l1_dots, l1_targets)))
+            self.remove(*l2_dots)
+            l1_dots, l1_targets = dots_for_transition(layer_1, input_labels)
+            self.add(*l1_dots)
+            self.play(*(info_dot.animate.move_to(target)
+                        for info_dot, target in zip(l1_dots, l1_targets)))
+            backprop_output_group = VGroup(*l1_dots)
+
+            # Finally, get the slope
+            slope_angle = np.arctan(f_d(x_value) * ax_ratio)
+            slope_line = (Line(ORIGIN, np.array([np.cos(slope_angle), np.sin(slope_angle), 0.]))
+                          .move_to(ax.i2gp(x_value, function_plot)))
+
+            self.play(ReplacementTransform(backprop_output_group, slope_line))
 
         self.next_slide()
