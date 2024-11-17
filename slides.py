@@ -1177,6 +1177,8 @@ class BackProp(ThreeDSlide):
         self.next_slide()
 
         ## Slide: forward flow
+        new_title = Text('Forward Propagation').to_edge(UP)
+
         def dots_for_transition(from_: list[VMobject], to: list[VMobject]):
             """Create all (pairwise) dots necessary to show a forward pass."""
             info_dots = [Dot().move_to(label) for _ in to for label in from_]
@@ -1189,7 +1191,7 @@ class BackProp(ThreeDSlide):
             return info_dots, to
 
         l1_dots, l1_targets = dots_for_transition(input_labels, layer_1)
-        self.play(*(Create(info_dot) for info_dot in l1_dots))
+        self.play(*(Create(info_dot) for info_dot in l1_dots), title.animate.become(new_title))
         self.play(*(info_dot.animate.move_to(target)
                     for info_dot, target in zip(l1_dots, l1_targets)))
 
@@ -1204,5 +1206,27 @@ class BackProp(ThreeDSlide):
         self.add(*out_dots)
         self.play(*(info_dot.animate.move_to(target)
                     for info_dot, target in zip(out_dots, out_targets)))
+
+        self.next_slide()
+
+        ## Slide: backward flow
+        self.play(*(Uncreate(info_dot) for info_dot in out_dots))
+
+        out_dots, out_targets = dots_for_output_transition(output_labels, layer_2)
+        self.play(*(Create(info_dot) for info_dot in out_dots))
+        self.play(*(info_dot.animate.move_to(target)
+                    for info_dot, target in zip(out_dots, out_targets)))
+
+        self.remove(*out_dots)
+        l2_dots, l2_targets = dots_for_transition(layer_2, layer_1)
+        self.add(*l2_dots)
+        self.play(*(info_dot.animate.move_to(target)
+                    for info_dot, target in zip(l2_dots, l2_targets)))
+
+        self.remove(*l2_dots)
+        l1_dots, l1_targets = dots_for_transition(layer_1, input_labels)
+        self.add(*l1_dots)
+        self.play(*(info_dot.animate.move_to(target)
+                    for info_dot, target in zip(l1_dots, l1_targets)))
 
         self.next_slide()
