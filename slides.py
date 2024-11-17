@@ -1141,13 +1141,17 @@ class BackProp(ThreeDSlide):
         perceptron_2_1 = Circle(0.2).shift(2 * RIGHT)
         perceptron_2_2 = Circle(0.2).shift(DR + RIGHT)
         perceptron_2_3 = Circle(0.2).shift(UR + RIGHT)
+        layer_1 = [perceptron, perceptron_2, perceptron_3]
+        layer_2 = [perceptron_2_3, perceptron_2_1, perceptron_2_2]
 
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
         z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
+        input_labels = [x_label, y_label, z_label]
         output_label = MathTex(r'o_1')
         output_label_2 = MathTex(r'o_2')
         output_label_3 = MathTex(r'o_3').shift(DOWN)
+        output_labels = [output_label, output_label_2, output_label_3]
 
         for label in (output_label, output_label_2, output_label_3):
             label.font_size = body_font_size
@@ -1170,3 +1174,35 @@ class BackProp(ThreeDSlide):
 
         self.play(FadeOut(body_group))
         self.play(Write(perceptron_group_multi))
+        self.next_slide()
+
+        ## Slide: forward flow
+        def dots_for_transition(from_: list[VMobject], to: list[VMobject]):
+            """Create all (pairwise) dots necessary to show a forward pass."""
+            info_dots = [Dot().move_to(label) for _ in to for label in from_]
+            dots_targets = [target for target in to for source in from_]
+            return info_dots, dots_targets
+
+        def dots_for_output_transition(from_: list[VMobject], to: list[VMobject]):
+            """Create all (paired) dots necessary to show the output pass."""
+            info_dots = [Dot().move_to(label) for label in from_]
+            return info_dots, to
+
+        l1_dots, l1_targets = dots_for_transition(input_labels, layer_1)
+        self.play(*(Create(info_dot) for info_dot in l1_dots))
+        self.play(*(info_dot.animate.move_to(target)
+                    for info_dot, target in zip(l1_dots, l1_targets)))
+
+        self.remove(*l1_dots)
+        l2_dots, l2_targets = dots_for_transition(layer_1, layer_2)
+        self.add(*l2_dots)
+        self.play(*(info_dot.animate.move_to(target)
+                    for info_dot, target in zip(l2_dots, l2_targets)))
+
+        self.remove(*l2_dots)
+        out_dots, out_targets = dots_for_output_transition(layer_2, output_labels)
+        self.add(*out_dots)
+        self.play(*(info_dot.animate.move_to(target)
+                    for info_dot, target in zip(out_dots, out_targets)))
+
+        self.next_slide()
