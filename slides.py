@@ -1246,6 +1246,9 @@ class BackProp(ThreeDSlide):
         self.next_slide()
 
         ## Slide: backward flow
+        new_title = Text('Backpropagation').to_edge(UP)
+        self.play(Transform(title, new_title))
+
         backward_x_values = np.linspace(3, local_minimum_1, 4)
         for x_value in backward_x_values:
             # Dot chosen from the plot becomes the new backprop input
