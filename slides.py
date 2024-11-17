@@ -1133,3 +1133,40 @@ class BackProp(ThreeDSlide):
 
         self.play(AnimationGroup(title.animate.to_edge(UP), Write(body_group), lag_ratio=0.6))
         self.next_slide()
+
+        ## Slide: get the network on screen
+        perceptron = Circle(0.2)
+        perceptron_2 = Circle(0.2).shift(DOWN)
+        perceptron_3 = Circle(0.2).shift(UP)
+        perceptron_2_1 = Circle(0.2).shift(2 * RIGHT)
+        perceptron_2_2 = Circle(0.2).shift(DR + RIGHT)
+        perceptron_2_3 = Circle(0.2).shift(UR + RIGHT)
+
+        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
+        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
+        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
+        output_label = MathTex(r'o_1')
+        output_label_2 = MathTex(r'o_2')
+        output_label_3 = MathTex(r'o_3').shift(DOWN)
+
+        for label in (output_label, output_label_2, output_label_3):
+            label.font_size = body_font_size
+            label.next_to(perceptron_2_1, RIGHT).shift(RIGHT)
+        output_label.shift(UP)
+        output_label_3.shift(DOWN)
+
+        x_y_lines = (
+            all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2, perceptron_3))
+            + all_arrows((perceptron, perceptron_2, perceptron_3),
+                         (perceptron_2_3, perceptron_2_2, perceptron_2_1))
+        )
+        output_lines = pair_arrows((perceptron_2_1, perceptron_2_2, perceptron_2_3),
+                                   (output_label_2, output_label_3, output_label))
+        perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
+                                        perceptron_2_1, perceptron_2_2, perceptron_2_3,
+                                        x_label, y_label, z_label,
+                                        *x_y_lines, output_label, output_label_2, output_label_3,
+                                        *output_lines).move_to(ORIGIN)
+
+        self.play(FadeOut(body_group))
+        self.play(Write(perceptron_group_multi))
