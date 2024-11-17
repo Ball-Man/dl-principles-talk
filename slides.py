@@ -1113,8 +1113,23 @@ class BackProp(ThreeDSlide):
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
+        body_font_size = 30
+
         ## Slide: title
         title = Text('Effective Training:\nInformation Flow')
         self.add(title)
         static_slide(self)
+        self.next_slide()
+
+        ## Slide: some points
+        train_as_minim = Text('Training the network is a minimization problem')
+        minim_with_gd = Text('We can minimize with Gradient Descent')
+        gradients_are_hard = Text('In the wild, getting gradients (slopes) can be hard')
+        body_group = VGroup(train_as_minim, minim_with_gd, gradients_are_hard)
+        body_group.arrange(2 * DOWN)
+        for text in body_group:
+            text.font_size = body_font_size
+            text.to_edge(LEFT)
+
+        self.play(AnimationGroup(title.animate.to_edge(UP), Write(body_group), lag_ratio=0.6))
         self.next_slide()
