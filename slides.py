@@ -1106,3 +1106,15 @@ class GradientDescent(ThreeDSlide):
         gradient_text.next_to(minima_hard_text, DOWN, aligned_edge=LEFT)
         self.play(TransformMatchingTex(gradient_descent_text, gradient_text, False))
         self.next_slide()
+
+
+class BackProp(ThreeDSlide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+
+        ## Slide: title
+        title = Text('Effective Training:\nInformation Flow')
+        self.add(title)
+        static_slide(self)
+        self.next_slide()
