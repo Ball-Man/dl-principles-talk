@@ -1210,22 +1210,34 @@ class BackProp(ThreeDSlide):
             info_dots = [Dot().move_to(label) for label in from_]
             return info_dots, to
 
-        l1_dots, l1_targets = dots_for_transition(input_labels, layer_1)
-        self.play(*(Create(info_dot) for info_dot in l1_dots), title.animate.become(new_title))
-        self.play(*(info_dot.animate.move_to(target)
-                    for info_dot, target in zip(l1_dots, l1_targets)))
+        # Do a couple of forward passes and plot the curve
+        forward_x_values = (1, 4, 7, 8)
+        on_plot_outputs_group = VGroup()
+        for x_value in forward_x_values:
+            l1_dots, l1_targets = dots_for_transition(input_labels, layer_1)
+            self.play(*(Create(info_dot) for info_dot in l1_dots))
+            self.play(*(info_dot.animate.move_to(target)
+                        for info_dot, target in zip(l1_dots, l1_targets)))
 
-        self.remove(*l1_dots)
-        l2_dots, l2_targets = dots_for_transition(layer_1, layer_2)
-        self.add(*l2_dots)
-        self.play(*(info_dot.animate.move_to(target)
-                    for info_dot, target in zip(l2_dots, l2_targets)))
+            self.remove(*l1_dots)
+            l2_dots, l2_targets = dots_for_transition(layer_1, layer_2)
+            self.add(*l2_dots)
+            self.play(*(info_dot.animate.move_to(target)
+                        for info_dot, target in zip(l2_dots, l2_targets)))
 
-        self.remove(*l2_dots)
-        out_dots, out_targets = dots_for_output_transition(layer_2, output_labels)
-        self.add(*out_dots)
-        self.play(*(info_dot.animate.move_to(target)
-                    for info_dot, target in zip(out_dots, out_targets)))
+            self.remove(*l2_dots)
+            out_dots, out_targets = dots_for_output_transition(layer_2, output_labels)
+            self.add(*out_dots)
+            self.play(*(info_dot.animate.move_to(target)
+                        for info_dot, target in zip(out_dots, out_targets)))
+
+            # Output goes to the plot
+            output_group = VGroup(*out_dots)
+            new_on_plot_dot = Dot(ax.i2gp(x_value, function_plot))
+            on_plot_outputs_group.add(new_on_plot_dot)
+            self.play(ReplacementTransform(output_group, new_on_plot_dot))
+
+        self.play(FadeOut(on_plot_outputs_group), Write(function_plot))
 
         self.next_slide()
 
