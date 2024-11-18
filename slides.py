@@ -1073,6 +1073,9 @@ class BackProp(ThreeDSlide):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
         body_font_size = 30
+        slope_color = YELLOW
+        network_input_color = WHITE
+        network_output_color = PURPLE
 
         # x, y pairs
         f_pairwise = ((-2, 2), (1, 4), (5, 3), (6, 1), (9, 5), (10, 4), (12, 5),
@@ -1153,7 +1156,7 @@ class BackProp(ThreeDSlide):
         ax = Axes((-1, 10), (-1, 10), x_length=ax_x_length, y_length=ax_y_length,
                   x_axis_config={'include_ticks': False},
                   y_axis_config={'include_ticks': False}).to_edge(DOWN, buff=0.1)
-        function_plot = ax.plot(f)          # Will be useful later
+        function_plot = ax.plot(f, color=network_output_color)          # Will be useful later
         error_label = ax.get_y_axis_label('error')
 
         self.play(FadeOut(body_group))
@@ -1162,41 +1165,47 @@ class BackProp(ThreeDSlide):
         self.next_slide()
 
         ## Slide: forward flow
-        def dots_for_transition(from_: list[VMobject], to: list[VMobject]):
+        def dots_for_transition(from_: list[VMobject], to: list[VMobject],
+                                color: ParsableManimColor = WHITE):
             """Create all (pairwise) dots necessary to show a forward pass."""
-            info_dots = [Dot().move_to(label) for _ in to for label in from_]
+            info_dots = [Dot(color=color).move_to(label) for _ in to for label in from_]
             dots_targets = [target for target in to for source in from_]
             return info_dots, dots_targets
 
-        def dots_for_output_transition(from_: list[VMobject], to: list[VMobject]):
+        def dots_for_output_transition(from_: list[VMobject], to: list[VMobject],
+                                       color: ParsableManimColor = WHITE):
             """Create all (paired) dots necessary to show the output pass."""
-            info_dots = [Dot().move_to(label) for label in from_]
+            info_dots = [Dot(color=color).move_to(label) for label in from_]
             return info_dots, to
 
         # Do a couple of forward passes and plot the curve
         forward_x_values = (1, 4, 7, 8)
         on_plot_outputs_group = VGroup()
+        l2_color = network_input_color.interpolate(network_output_color, 0.5)
         for x_value in forward_x_values:
-            l1_dots, l1_targets = dots_for_transition(input_labels, layer_1)
+            l1_dots, l1_targets = dots_for_transition(input_labels, layer_1, network_input_color)
             self.play(*(Create(info_dot) for info_dot in l1_dots))
-            self.play(*(info_dot.animate.move_to(target)
+            self.play(*(info_dot.animate.become(info_dot.copy().move_to(target)
+                                                .set_color(l2_color))
                         for info_dot, target in zip(l1_dots, l1_targets)))
 
             self.remove(*l1_dots)
-            l2_dots, l2_targets = dots_for_transition(layer_1, layer_2)
+            l2_dots, l2_targets = dots_for_transition(layer_1, layer_2, l2_color)
             self.add(*l2_dots)
-            self.play(*(info_dot.animate.move_to(target)
+            self.play(*(info_dot.animate.become(info_dot.copy().move_to(target)
+                                                        .set_color(network_output_color))
                         for info_dot, target in zip(l2_dots, l2_targets)))
 
             self.remove(*l2_dots)
-            out_dots, out_targets = dots_for_output_transition(layer_2, output_labels)
+            out_dots, out_targets = dots_for_output_transition(layer_2, output_labels,
+                                                               network_output_color)
             self.add(*out_dots)
             self.play(*(info_dot.animate.move_to(target)
                         for info_dot, target in zip(out_dots, out_targets)))
 
             # Output goes to the plot
             output_group = VGroup(*out_dots)
-            new_on_plot_dot = Dot(ax.i2gp(x_value, function_plot))
+            new_on_plot_dot = Dot(ax.i2gp(x_value, function_plot), color=network_output_color)
             on_plot_outputs_group.add(new_on_plot_dot)
             self.play(ReplacementTransform(output_group, new_on_plot_dot))
 
@@ -1211,8 +1220,9 @@ class BackProp(ThreeDSlide):
         backward_x_values = np.linspace(3, local_minimum_1, 4)
         for x_value in backward_x_values:
             # Dot chosen from the plot becomes the new backprop input
-            plot_dot = Dot(ax.i2gp(x_value, function_plot))
-            out_dots, out_targets = dots_for_output_transition(output_labels, layer_2)
+            plot_dot = Dot(ax.i2gp(x_value, function_plot), color=network_output_color)
+            out_dots, out_targets = dots_for_output_transition(output_labels, layer_2,
+                                                               network_output_color)
             backprop_input_group = VGroup(*out_dots)
 
             self.play(Create(plot_dot))
@@ -1221,21 +1231,25 @@ class BackProp(ThreeDSlide):
                         for info_dot, target in zip(out_dots, out_targets)))
 
             self.remove(*out_dots)
-            l2_dots, l2_targets = dots_for_transition(layer_2, layer_1)
+            l2_dots, l2_targets = dots_for_transition(layer_2, layer_1, network_output_color)
+            l1_color = network_output_color.interpolate(slope_color, 0.5)
             self.add(*l2_dots)
-            self.play(*(info_dot.animate.move_to(target)
+            self.play(*(info_dot.animate.become(info_dot.copy().move_to(target)
+                                                .set_color(l1_color))
                         for info_dot, target in zip(l2_dots, l2_targets)))
 
             self.remove(*l2_dots)
-            l1_dots, l1_targets = dots_for_transition(layer_1, input_labels)
+            l1_dots, l1_targets = dots_for_transition(layer_1, input_labels, l1_color)
             self.add(*l1_dots)
-            self.play(*(info_dot.animate.move_to(target)
+            self.play(*(info_dot.animate.become(info_dot.copy().move_to(target)
+                                                .set_color(slope_color))
                         for info_dot, target in zip(l1_dots, l1_targets)))
             backprop_output_group = VGroup(*l1_dots)
 
             # Finally, get the slope
             slope_angle = np.arctan(f_d(x_value) * ax_ratio)
-            slope_line = (Line(ORIGIN, np.array([np.cos(slope_angle), np.sin(slope_angle), 0.]))
+            slope_line = (Line(ORIGIN, np.array([np.cos(slope_angle), np.sin(slope_angle), 0.]),
+                               color=slope_color)
                           .move_to(ax.i2gp(x_value, function_plot)))
 
             self.play(ReplacementTransform(backprop_output_group, slope_line))
