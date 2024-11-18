@@ -392,8 +392,8 @@ class LinearToNonLinear(Slide):
         function_def = MathTex(r'f: \mathbb{R}^2 \to \mathbb{R}').shift(UP)
         function_def.font_size = formula_font_size
 
-        regressor_formula = MathTex(r'f(x, y) = \sigma(w_1x + w_2y + b) = output',
-                                    substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
+        regressor_formula = MathTex(r'f(x, y) = \sigma(w_xx + w_yy + b) = output',
+                                    substrings_to_isolate=[r'f(x, y) = \sigma(w_xx + w_yy', ')'])
         regressor_formula.font_size = formula_font_size
 
         self.play(title.animate.to_edge(UP), Write(function_def), Write(regressor_formula))
@@ -402,8 +402,8 @@ class LinearToNonLinear(Slide):
 
         ## Slide: get rid of b
         regressor_formula_no_b = MathTex(
-            r'f(x, y) = \sigma(w_1x + w_2y) = output',
-            substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
+            r'f(x, y) = \sigma(w_xx + w_yy) = output',
+            substrings_to_isolate=[r'f(x, y) = \sigma(w_xx + w_yy', ')'])
         regressor_formula_no_b.font_size = formula_font_size
 
         self.play(TransformMatchingTex(regressor_formula, regressor_formula_no_b))
@@ -421,7 +421,7 @@ class LinearToNonLinear(Slide):
             f \left( \left[ \begin{array}{c} x \\ y \end{array} \right] \right) =
             \sigma\left(
             \left[ \begin{array}{cc}
-            w_1 & w_2
+            w_x & w_y
             \end{array} \right]
             \left[ \begin{array}{c}
             x \\
@@ -464,7 +464,7 @@ class LinearToNonLinear(Slide):
             f \left( \left[ \begin{array}{c} x \\ y \\ z \end{array} \right] \right) =
             \sigma\left(
             \left[ \begin{array}{ccc}
-            w_1 & w_2 & w_3
+            w_x & w_y & w_z
             \end{array} \right]
             \left[ \begin{array}{c}
             x \\
@@ -513,8 +513,8 @@ class LinearToNonLinear(Slide):
             f \left( \left[ \begin{array}{c} x \\ y \\ z \end{array} \right] \right) =
             \sigma\left(
             \left[ \begin{array}{ccc}
-            w_1 & w_2 & w_3 \\
-            w_4 & w_5 & w_6
+            w_{x1} & w_{y1} & w_{z1} \\
+            w_{x2} & w_{y2} & w_{z2}
             \end{array} \right]
             \left[ \begin{array}{c}
             x \\
@@ -581,14 +581,14 @@ class LinearToNonLinear(Slide):
             r'''
             f \left( \left[ \begin{array}{c} x \\ y \\ z \end{array} \right] \right) =
             \sigma\left(
-            \left[ \begin{array}{ccc}
-            w_{10} & w_{11} \\
-            w_{13} & w_{14}
+            \left[ \begin{array}{cc}
+            w_{B1} & w_{B2} \\
+            w_{B3} & w_{B4}
             \end{array} \right]
             \sigma\left(
             \left[ \begin{array}{ccc}
-            w_{1} & w_{2} & w_{3} \\
-            w_{4} & w_{5} & w_{6}
+            w_{x1} & w_{y1} & w_{z1} \\
+            w_{x2} & w_{y2} & w_{z2}
             \end{array} \right]
             \left[ \begin{array}{c}
             x \\
@@ -668,7 +668,7 @@ class LinearToNonLinear(Slide):
         self.next_slide()
 
         ## Slide: let's simplify
-        regressor_concise_formula = MathTex(r'f(v) = \sigma(\,W_2\: \sigma(\,W_1 v\,)\,)')
+        regressor_concise_formula = MathTex(r'f(v) = \sigma(\,B\: \sigma(\,A v\,)\,)')
         regressor_concise_formula.font_size = formula_font_size
         regressor_concise_formula.to_edge(LEFT).shift(matrix_form_shift)
 
@@ -680,14 +680,14 @@ class LinearToNonLinear(Slide):
         ## Slide: going deep
         new_title = Text('Deep Neural Network').to_edge(UP)
         regressor_concise_formula_deep1 = MathTex(
-            r'f(v) = \sigma(\,W_3\: \sigma(\,W_2\: \sigma(\,W_1 v\,)\,)\,)'
+            r'f(v) = \sigma(\,C\: \sigma(\,B\: \sigma(\,A v\,)\,)\,)'
         ).to_edge(LEFT).shift(matrix_form_shift)
         regressor_concise_formula_deep2 = MathTex(
-            r'f(v) = \sigma(\,W_4\:\sigma(\,W_3\: \sigma(\,W_2\: \sigma(\,W_1 v\,)\,)\,)\,)'
+            r'f(v) = \sigma(\,D\:\sigma(\,C\: \sigma(\,B\: \sigma(\,A v\,)\,)\,)\,)'
         ).to_edge(LEFT).shift(matrix_form_shift)
         regressor_concise_formula_deep3 = MathTex(
             r'''
-            f(v) = \sigma(\,W_5\: \sigma(\,W_4\: \sigma(\,W_3\: \sigma(\,W_2\: \sigma(\,W_1 v\,)
+            f(v) = \sigma(\,E\: \sigma(\,D\: \sigma(\,C\: \sigma(\,B\: \sigma(\,A v\,)
             \,)\,)\,)\,)
             '''
         ).to_edge(LEFT).shift(matrix_form_shift)
