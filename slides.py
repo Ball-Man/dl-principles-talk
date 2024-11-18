@@ -391,7 +391,7 @@ class LinearToNonLinear(Slide):
         function_def = MathTex(r'f: \mathbb{R}^2 \to \mathbb{R}').shift(UP)
         function_def.font_size = formula_font_size
 
-        regressor_formula = MathTex(r'f(x, y) = \sigma(w_1x + w_2y + b)',
+        regressor_formula = MathTex(r'f(x, y) = \sigma(w_1x + w_2y + b) = output',
                                     substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
         regressor_formula.font_size = formula_font_size
 
@@ -400,8 +400,9 @@ class LinearToNonLinear(Slide):
         self.next_slide()
 
         ## Slide: get rid of b
-        regressor_formula_no_b = MathTex(r'f(x, y) = \sigma(w_1x + w_2y)',
-                                         substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
+        regressor_formula_no_b = MathTex(
+            r'f(x, y) = \sigma(w_1x + w_2y) = output',
+            substrings_to_isolate=[r'f(x, y) = \sigma(w_1x + w_2y', ')'])
         regressor_formula_no_b.font_size = formula_font_size
 
         self.play(TransformMatchingTex(regressor_formula, regressor_formula_no_b))
@@ -426,6 +427,7 @@ class LinearToNonLinear(Slide):
             y
             \end{array} \right]
             \right)
+            = output
             '''
         )
         regressor_matrix_formula.font_size = formula_font_size
@@ -438,17 +440,14 @@ class LinearToNonLinear(Slide):
         perceptron = Circle(0.2)
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(LEFT + 0.5 * UP)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + 0.5 * DOWN)
-        output_label = MathTex(
-            r'f \left( \left[ \begin{array}{c} x \\ y \end{array} \right] \right)'
-        )
+        output_label = MathTex('output')
         output_label.font_size = formula_font_size
         output_label.next_to(perceptron, RIGHT).shift(RIGHT)
         x_y_lines = all_arrows((x_label, y_label), (perceptron,))
         output_line = neural_net_connection_arrow(perceptron.get_critical_point(RIGHT),
                                                   output_label.get_critical_point(LEFT))
-        perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines,
-                                  output_label, output_line).to_edge(LEFT).shift(perceptron_group_shift)
-
+        perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines, output_label,
+                                  output_line).to_edge(LEFT).shift(perceptron_group_shift)
 
         self.play(function_def.animate.to_edge(LEFT),
                   regressor_matrix_formula.animate.to_edge(LEFT))
@@ -472,6 +471,7 @@ class LinearToNonLinear(Slide):
             z
             \end{array} \right]
             \right)
+            = output
             '''
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
@@ -487,9 +487,7 @@ class LinearToNonLinear(Slide):
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
         z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
-        output_label = MathTex(
-            r'f \left( \left[ \begin{array}{c} x \\ y \\ z\end{array} \right] \right)'
-        )
+        output_label = MathTex('output')
         output_label.font_size = formula_font_size
         output_label.next_to(perceptron, RIGHT).shift(RIGHT)
         x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron,))
@@ -523,6 +521,11 @@ class LinearToNonLinear(Slide):
             z
             \end{array} \right]
             \right)
+            =
+            \left[ \begin{array}{c}
+            output_1 \\
+            output_2 \\
+            \end{array} \right]
             '''
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
@@ -540,12 +543,8 @@ class LinearToNonLinear(Slide):
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
         z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL + UP * 0.5)
-        output_label = MathTex(
-            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_1'
-        )
-        output_label_2 = MathTex(
-            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_2'
-        )
+        output_label = MathTex('output_1')
+        output_label_2 = MathTex('output_2')
         # output_label_3 = MathTex(
         #     r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
         # ).shift(DOWN)
@@ -594,9 +593,14 @@ class LinearToNonLinear(Slide):
             z
             \end{array} \right]
             \right) \right)
+            =
+            \left[ \begin{array}{c}
+            output_1 \\
+            output_2 \\
+            \end{array} \right]
             '''
         )
-        regressor_matrix_formula_multi.font_size = formula_font_size
+        regressor_matrix_formula_multi.font_size = 35       # formula_font_size
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
@@ -613,12 +617,8 @@ class LinearToNonLinear(Slide):
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
         z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL + UP * 0.5)
-        output_label = MathTex(
-            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_1'
-        )
-        output_label_2 = MathTex(
-            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_2'
-        )
+        output_label = MathTex('output_1')
+        output_label_2 = MathTex('output_2')
         # output_label_3 = MathTex(
         #     r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
         # ).shift(DOWN)
