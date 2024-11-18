@@ -374,12 +374,27 @@ def pair_arrows(from_objects: Iterable[VMobject], to_objects: Iterable[VMobject]
     return lines
 
 
+class ColorGenerator:
+    """Generate pseudorandom HSV colors."""
+
+    def __init__(self, seed, saturation=1, value=0.5):
+        self.rng = np.random.default_rng(seed)
+        self.saturation = saturation
+        self.value = value
+
+    def __call__(self) -> ManimColor:
+        return ManimColor.from_hsv((self.rng.random(), self.saturation, self.value))
+
+
 class LinearToNonLinear(Slide):
 
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
         formula_font_size = 40
         perceptron_color = RED
+        color_generator = ColorGenerator(42)
+        layer_1_colors = [color_generator() for _ in range(3 * 2)]
+        layer_2_colors = [color_generator() for _ in range(2 * 2)]
 
         ## Slide: title
         title = Text('Logistic Regressor')
@@ -455,6 +470,28 @@ class LinearToNonLinear(Slide):
         self.play(function_def.animate.shift(2 * UP),
                   regressor_matrix_formula.animate.shift(matrix_form_shift),
                   Write(perceptron_group, lag_ratio=0))
+        self.add(index_labels(regressor_matrix_formula[0]).set_color(RED))
+        self.next_slide()
+
+        ## Slide: associate weights with connections in visual model
+        w_x_group = VGroup(*regressor_matrix_formula[0][11:13])
+        w_y_group = VGroup(*regressor_matrix_formula[0][13:15])
+
+        floating_w_x = w_x_group.copy()
+        floating_w_y = w_y_group.copy()
+
+        self.play(floating_w_x.animate.next_to(x_y_lines[0], UP),
+                  floating_w_y.animate.next_to(x_y_lines[1], DOWN))
+        self.play(w_x_group.animate.set_color(layer_1_colors[0]),
+                  floating_w_x.animate.set_color(layer_1_colors[0]),
+                  w_y_group.animate.set_color(layer_1_colors[1]),
+                  floating_w_y.animate.set_color(layer_1_colors[1]),
+                  x_y_lines[0].animate.set_color(layer_1_colors[0]),
+                  x_y_lines[1].animate.set_color(layer_1_colors[1]))
+        self.play(floating_w_x.animate.become(x_y_lines[0]),
+                  floating_w_y.animate.become(x_y_lines[1]))
+        # Silently remove the overlapping arrows
+        self.play(FadeOut(floating_w_x), FadeOut(floating_w_y))
         self.next_slide()
 
         ## Slide: multivaried function
