@@ -317,6 +317,31 @@ class Logistic(ThreeDSlide):
         self.next_slide()
 
 
+class WhyLogistic(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+        body_text_size = 30
+
+        ## Slide: title
+        why_title = Text('Why Logistic Regression?')
+        static_slide(self)
+        self.add(why_title)
+        self.next_slide()
+
+        ## Slide: some positive aspects
+        # Prepare body
+        intuitive_text = Paragraph('Linear relationships are intuitive', font_size=body_text_size)
+        lightweight_text = Text('Lightweight computationally', font_size=body_text_size)
+        prob_output_text = Text('Probabilistic output', font_size=body_text_size)
+        logistic_regression_body = VGroup(intuitive_text, lightweight_text, prob_output_text)
+        logistic_regression_body.arrange(3 * DOWN, aligned_edge=LEFT).shift(3 * LEFT)
+
+        self.play(AnimationGroup(why_title.animate.to_edge(UP),
+                                 Write(logistic_regression_body), lag_ratio=0.6))
+        self.next_slide()
+
+
 def neural_net_connection_arrow(*args, **kwargs) -> Arrow:
     """Build an arrow suitable for neural net links."""
     return Arrow(*args, stroke_width=5,  # Fixed line width
