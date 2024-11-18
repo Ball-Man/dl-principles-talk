@@ -715,90 +715,24 @@ class WhyNeuralNetworks(Slide):
         body_text_size = 30
 
         ## Slide: title
-        why_title = Text('Why?')
+        why_title = Text('Why Neural Networks?')
         static_slide(self)
         self.add(why_title)
         self.next_slide()
 
-        ## Slide: why logistic regressors
-        why_title_colon = Text('Why:').to_corner(UL)
-        title = Text('Logistic Regression').to_edge(UP)
-
-        # Prepare body
-        intuitive_text = Text('Intuitive', font_size=body_text_size)
-        lightweight_text = Text('Lightweight', font_size=body_text_size)
-        prob_output_text = Text('Probabilistic output', font_size=body_text_size)
-        logistic_regression_body = VGroup(intuitive_text, lightweight_text, prob_output_text)
-        logistic_regression_body.arrange(3 * DOWN, aligned_edge=LEFT).shift(3 * LEFT)
-
-        self.play(TransformMatchingShapes(why_title, why_title_colon, transform_mismatches=True),
-                  Write(title))
-
-        ## Slide: intuitive
-        self.play(Write(intuitive_text))
-        self.next_slide()
-        ## Slide: lightweight
-        self.play(Write(lightweight_text))
-        self.next_slide()
-        ## Slide: probabilistic output
-        self.play(Write(prob_output_text))
-        self.next_slide()
-
-        self.play(FadeOut(logistic_regression_body))
-        # Switch title
-        new_title = Text('Neural Networks').to_edge(UP)
-        self.play(FadeTransform(title, new_title))
-
         ## Slide: universal approximators
-        universal_approximators_text = Tex(
-            r'''
-            {0.7\textwidth}{\Large Multilayer feedforward networks are universal approximators}
+        universal_approximators_text = Text(
+            'Multilayer feedforward networks are universal\napproximators (Hornik & Stinchcombe & White, 1989)',
+            font_size=body_text_size
+        )
+        flexibility_text = Text('Computational cost trade off', font_size=body_text_size)
+        prob_output_text = Text('Probabilistic Output', font_size=body_text_size)
 
-            {\tiny Kurt Hornik, Maxwell Stinchcombe, Halbert White (1989)}
+        neural_network_body = VGroup(universal_approximators_text, flexibility_text, prob_output_text)
+        neural_network_body.arrange(3 * DOWN, aligned_edge=LEFT).to_edge(LEFT)
 
-            { This paper rigorously establishes that standard multilayer feedforward networks with
-            as few as \emph{\textbf{one hidden layer}} using
-            \emph{\textbf{arbitrary squashing functions}} are capable of
-            approximating any Borel measurable function from one finite dimensional space to
-            another to any desired degree of accuracy, provided sufficiently many hidden
-            units are available. In this sense, multilayer feedforward networks are a class of
-            universal approximators.}
-            ''',
-            font_size=40,
-            tex_environment='minipage',
-        ).shift(DOWN)
-
-        self.play(FadeIn(universal_approximators_text, shift=UP))
-        self.next_slide()
-
-        universal_approximators_morphing_text = Tex(
-            r'''
-            {0.7\textwidth}{\Large Multilayer feedforward networks are universal approximators}
-            ''',
-            font_size=40,
-            tex_environment='minipage',
-        ).move_to(universal_approximators_text, aligned_edge=UP)
-
-        # To make the transition smooth, keep the same text style for next points
-        flexibility_text = Tex(
-            r'''
-            {0.7\textwidth}{\Large Flexibility}
-            ''',
-            font_size=40,
-            tex_environment='minipage',
-        ).move_to(universal_approximators_text, aligned_edge=UL).shift(2 * DOWN)
-
-        prob_output_text = Tex(
-            r'''
-            {0.7\textwidth}{\Large Probabilistic output}
-            ''',
-            font_size=40,
-            tex_environment='minipage',
-        ).move_to(flexibility_text, aligned_edge=UL).shift(2 * DOWN)
-
-        self.play(TransformMatchingShapes(universal_approximators_text,
-                                          universal_approximators_morphing_text))
-        self.play(Write(flexibility_text), Write(prob_output_text))
+        self.play(AnimationGroup(why_title.animate.to_edge(UP),
+                                 Write(neural_network_body), lag_ratio=0.6))
         self.next_slide()
 
 
