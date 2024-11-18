@@ -386,15 +386,23 @@ class ColorGenerator:
         return ManimColor.from_hsv((self.rng.uniform(*range_), self.saturation, self.value))
 
 
+def color_lines(lines, colors):
+    """Apply color to the lines in order."""
+    for color_index, line in enumerate(lines):
+        line.set_color(colors[color_index])
+
+
 class LinearToNonLinear(Slide):
 
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
         formula_font_size = 40
         perceptron_color = RED
-        color_generator = ColorGenerator(42)
-        layer_1_colors = [color_generator() for _ in range(3 * 2)]
-        layer_2_colors = [color_generator() for _ in range(2 * 2)]
+        color_generator = ColorGenerator(42, value=1.)
+        layer_1_colors = ([color_generator((0, 0.25)) for _ in range(3)]
+                          + [color_generator((0.75, 1.)) for _ in range(3)])
+        layer_2_colors = ([color_generator((0.25, 0.5)) for _ in range(2)]
+                          + [color_generator((0.5, 0.75)) for _ in range(2)])
 
         ## Slide: title
         title = Text('Logistic Regressor')
@@ -470,7 +478,6 @@ class LinearToNonLinear(Slide):
         self.play(function_def.animate.shift(2 * UP),
                   regressor_matrix_formula.animate.shift(matrix_form_shift),
                   Write(perceptron_group, lag_ratio=0))
-        self.add(index_labels(regressor_matrix_formula[0]).set_color(RED))
         self.next_slide()
 
         ## Slide: associate weights with connections in visual model
@@ -514,6 +521,9 @@ class LinearToNonLinear(Slide):
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
+        w_x_group = VGroup(regressor_matrix_formula_multi[0][17:19]).set_color(layer_1_colors[0])
+        w_y_group = VGroup(regressor_matrix_formula_multi[0][19:21]).set_color(layer_1_colors[1])
+        w_z_group = VGroup(regressor_matrix_formula_multi[0][21:23]).set_color(layer_1_colors[2])
 
         # Update function def
         function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}')
@@ -529,6 +539,7 @@ class LinearToNonLinear(Slide):
         output_label.font_size = formula_font_size
         output_label.next_to(perceptron, RIGHT).shift(RIGHT)
         x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron,))
+        color_lines(x_y_lines, layer_1_colors)
         output_line = Arrow(perceptron.get_critical_point(RIGHT),
                             output_label.get_critical_point(LEFT))
         perceptron_group_multi = VGroup(perceptron, x_label, y_label, z_label, *x_y_lines,
@@ -568,6 +579,10 @@ class LinearToNonLinear(Slide):
         )
         regressor_matrix_formula_multi.font_size = formula_font_size
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
+        # Apply colors to individual matrix elements
+        for color_index, weight_index in enumerate(range(17, 35, 3)):
+            for glyph in regressor_matrix_formula_multi[0][weight_index : weight_index + 3]:
+                glyph.set_color(layer_1_colors[color_index])
 
         # Update function def
         function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
@@ -596,6 +611,7 @@ class LinearToNonLinear(Slide):
 
         x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2))
         #                                                     perceptron_3))
+        color_lines(x_y_lines, layer_1_colors)
         output_lines = pair_arrows((perceptron, perceptron_2),          # perceptron_3
                                    (output_label_2, output_label))      # output_label_3
         perceptron_group_multi = VGroup(perceptron, perceptron_2,       # perceptron_3,
@@ -642,6 +658,15 @@ class LinearToNonLinear(Slide):
         )
         regressor_matrix_formula_multi.font_size = 35       # formula_font_size
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
+        # Apply colors to individual matrix elements
+        for color_index, weight_index in enumerate(range(17, 29, 3)):
+            for glyph in regressor_matrix_formula_multi[0][weight_index : weight_index + 3]:
+                glyph.set_color(layer_2_colors[color_index])
+
+        for color_index, weight_index in enumerate(range(34, 52, 3)):
+            for glyph in regressor_matrix_formula_multi[0][weight_index : weight_index + 3]:
+                glyph.set_color(layer_1_colors[color_index])
+
 
         # Update function def
         function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
@@ -677,6 +702,7 @@ class LinearToNonLinear(Slide):
             + all_arrows((perceptron, perceptron_2),            # perceptron_3
                          (perceptron_2_2, perceptron_2_1))      # perceptron_2_3
         )
+        color_lines(x_y_lines, layer_1_colors + layer_2_colors)
         output_lines = pair_arrows((perceptron_2_1, perceptron_2_2),        # perceptron_2_3
                                    (output_label_2, output_label))          # output_label_3
         perceptron_group_multi = VGroup(perceptron, perceptron_2,           # perceptron_3
