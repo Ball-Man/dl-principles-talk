@@ -382,8 +382,8 @@ class ColorGenerator:
         self.saturation = saturation
         self.value = value
 
-    def __call__(self) -> ManimColor:
-        return ManimColor.from_hsv((self.rng.random(), self.saturation, self.value))
+    def __call__(self, range_=(0, 1)) -> ManimColor:
+        return ManimColor.from_hsv((self.rng.uniform(*range_), self.saturation, self.value))
 
 
 class LinearToNonLinear(Slide):
