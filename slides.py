@@ -356,7 +356,7 @@ def all_arrows(from_objects: Iterable[VMobject], to_objects: Iterable[VMobject],
     This creates all connections.
     """
     lines = []
-    for from_, to in product(from_objects, to_objects):
+    for to, from_ in product(to_objects, from_objects):
         lines.append(line_factory(from_.get_critical_point(RIGHT), to.get_critical_point(LEFT)))
     return lines
 
