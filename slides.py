@@ -379,6 +379,7 @@ class LinearToNonLinear(Slide):
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
         formula_font_size = 40
+        perceptron_color = RED
 
         ## Slide: title
         title = Text('Logistic Regressor')
@@ -437,7 +438,7 @@ class LinearToNonLinear(Slide):
         self.next_slide()
 
         ## Slide: the perceptron
-        perceptron = Circle(0.2)
+        perceptron = VGroup(Circle(0.2, color=perceptron_color), Text('+', color=perceptron_color))
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(LEFT + 0.5 * UP)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + 0.5 * DOWN)
         output_label = MathTex('output')
@@ -483,7 +484,7 @@ class LinearToNonLinear(Slide):
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
-        perceptron = Circle(0.2)
+        perceptron = VGroup(Circle(0.2, color=perceptron_color), Text('+', color=perceptron_color))
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
         z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
@@ -537,8 +538,10 @@ class LinearToNonLinear(Slide):
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
-        perceptron = Circle(0.2).shift(DOWN * 0.5)
-        perceptron_2 = Circle(0.2).shift(UP * 0.5)
+        perceptron = VGroup(Circle(0.2, color=perceptron_color),
+                            Text('+', color=perceptron_color)).shift(DOWN * 0.5)
+        perceptron_2 = VGroup(Circle(0.2, color=perceptron_color),
+                              Text('+', color=perceptron_color)).shift(UP * 0.5)
         # perceptron_3 = Circle(0.2).shift(UP)
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
@@ -609,10 +612,14 @@ class LinearToNonLinear(Slide):
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
-        perceptron = Circle(0.2).shift(DOWN * 0.5)
-        perceptron_2 = Circle(0.2).shift(UP * 0.5)
-        perceptron_2_1 = Circle(0.2).next_to(perceptron, RIGHT).shift(RIGHT)
-        perceptron_2_2 = Circle(0.2).next_to(perceptron_2, RIGHT).shift(RIGHT)
+        perceptron = VGroup(Circle(0.2, color=perceptron_color),
+                            Text('+', color=perceptron_color)).shift(DOWN * 0.5)
+        perceptron_2 = VGroup(Circle(0.2, color=perceptron_color),
+                              Text('+', color=perceptron_color)).shift(UP * 0.5)
+        perceptron_2_1 = VGroup(Circle(0.2, color=perceptron_color),
+                                Text('+', color=perceptron_color)).next_to(perceptron, RIGHT).shift(RIGHT)
+        perceptron_2_2 = VGroup(Circle(0.2, color=perceptron_color),
+                                Text('+', color=perceptron_color)).next_to(perceptron_2, RIGHT).shift(RIGHT)
 
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
