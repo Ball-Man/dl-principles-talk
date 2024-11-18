@@ -515,8 +515,7 @@ class LinearToNonLinear(Slide):
             \sigma\left(
             \left[ \begin{array}{ccc}
             w_1 & w_2 & w_3 \\
-            w_4 & w_5 & w_6 \\
-            w_7 & w_8 & w_9
+            w_4 & w_5 & w_6
             \end{array} \right]
             \left[ \begin{array}{c}
             x \\
@@ -530,39 +529,39 @@ class LinearToNonLinear(Slide):
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^3')
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
         function_def_multi.font_size = formula_font_size
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
-        perceptron = Circle(0.2)
-        perceptron_2 = Circle(0.2).shift(DOWN)
-        perceptron_3 = Circle(0.2).shift(UP)
-        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
-        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
-        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
+        perceptron = Circle(0.2).shift(DOWN * 0.5)
+        perceptron_2 = Circle(0.2).shift(UP * 0.5)
+        # perceptron_3 = Circle(0.2).shift(UP)
+        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
+        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
+        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL + UP * 0.5)
         output_label = MathTex(
             r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_1'
         )
         output_label_2 = MathTex(
             r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_2'
         )
-        output_label_3 = MathTex(
-            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
-        ).shift(DOWN)
-        for label in (output_label, output_label_2, output_label_3):
+        # output_label_3 = MathTex(
+        #     r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
+        # ).shift(DOWN)
+        for label in (output_label, output_label_2):        # , output_label_3
             label.font_size = formula_font_size
             label.next_to(perceptron, RIGHT).shift(RIGHT)
         output_label.shift(UP)
-        output_label_3.shift(DOWN)
+        # output_label_3.shift(DOWN)
 
-        x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2,
-                                                             perceptron_3))
-        output_lines = pair_arrows((perceptron, perceptron_2, perceptron_3),
-                                   (output_label_2, output_label_3, output_label))
-        perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
+        x_y_lines = all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2))
+        #                                                     perceptron_3))
+        output_lines = pair_arrows((perceptron, perceptron_2),          # perceptron_3
+                                   (output_label_2, output_label))      # output_label_3
+        perceptron_group_multi = VGroup(perceptron, perceptron_2,       # perceptron_3,
                                         x_label, y_label, z_label,
-                                        *x_y_lines, output_label, output_label_2, output_label_3,
+                                        *x_y_lines, output_label, output_label_2, # output_label_3,
                                         *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
         self.play(TransformMatchingShapes(regressor_matrix_formula,
@@ -581,15 +580,13 @@ class LinearToNonLinear(Slide):
             f \left( \left[ \begin{array}{c} x \\ y \\ z \end{array} \right] \right) =
             \sigma\left(
             \left[ \begin{array}{ccc}
-            w_{10} & w_{11} & w_{12} \\
-            w_{13} & w_{14} & w_{15} \\
-            w_{16} & w_{17} & w_{18}
+            w_{10} & w_{11} \\
+            w_{13} & w_{14}
             \end{array} \right]
             \sigma\left(
             \left[ \begin{array}{ccc}
             w_{1} & w_{2} & w_{3} \\
-            w_{4} & w_{5} & w_{6} \\
-            w_{7} & w_{8} & w_{9}
+            w_{4} & w_{5} & w_{6}
             \end{array} \right]
             \left[ \begin{array}{c}
             x \\
@@ -603,47 +600,45 @@ class LinearToNonLinear(Slide):
         regressor_matrix_formula_multi.to_edge(LEFT).shift(matrix_form_shift)
 
         # Update function def
-        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^3')
+        function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
         function_def_multi.font_size = formula_font_size
         function_def_multi.to_edge(LEFT).shift(3 * UP)
 
         # Update perceptron
-        perceptron = Circle(0.2)
-        perceptron_2 = Circle(0.2).shift(DOWN)
-        perceptron_3 = Circle(0.2).shift(UP)
-        perceptron_2_1 = Circle(0.2).shift(2 * RIGHT)
-        perceptron_2_2 = Circle(0.2).shift(DR + RIGHT)
-        perceptron_2_3 = Circle(0.2).shift(UR + RIGHT)
+        perceptron = Circle(0.2).shift(DOWN * 0.5)
+        perceptron_2 = Circle(0.2).shift(UP * 0.5)
+        perceptron_2_1 = Circle(0.2).next_to(perceptron, RIGHT).shift(RIGHT)
+        perceptron_2_2 = Circle(0.2).next_to(perceptron_2, RIGHT).shift(RIGHT)
 
-        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL)
-        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT)
-        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL)
+        x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
+        y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
+        z_label = MathTex('z').next_to(perceptron, LEFT).shift(DL + UP * 0.5)
         output_label = MathTex(
             r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_1'
         )
         output_label_2 = MathTex(
             r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_2'
         )
-        output_label_3 = MathTex(
-            r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
-        ).shift(DOWN)
-        for label in (output_label, output_label_2, output_label_3):
+        # output_label_3 = MathTex(
+        #     r'f \left( \left[ \begin{array}{c} \vdots \end{array} \right] \right)_3'
+        # ).shift(DOWN)
+        for label in (output_label, output_label_2):        # output_label_3
             label.font_size = formula_font_size
             label.next_to(perceptron_2_1, RIGHT).shift(RIGHT)
         output_label.shift(UP)
-        output_label_3.shift(DOWN)
+        # output_label_3.shift(DOWN)
 
         x_y_lines = (
-            all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2, perceptron_3))
-            + all_arrows((perceptron, perceptron_2, perceptron_3),
-                         (perceptron_2_3, perceptron_2_2, perceptron_2_1))
+            all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2))     # perceptron_3
+            + all_arrows((perceptron, perceptron_2),            # perceptron_3
+                         (perceptron_2_2, perceptron_2_1))      # perceptron_2_3
         )
-        output_lines = pair_arrows((perceptron_2_1, perceptron_2_2, perceptron_2_3),
-                                   (output_label_2, output_label_3, output_label))
-        perceptron_group_multi = VGroup(perceptron, perceptron_2, perceptron_3,
-                                        perceptron_2_1, perceptron_2_2, perceptron_2_3,
+        output_lines = pair_arrows((perceptron_2_1, perceptron_2_2),        # perceptron_2_3
+                                   (output_label_2, output_label))          # output_label_3
+        perceptron_group_multi = VGroup(perceptron, perceptron_2,           # perceptron_3
+                                        perceptron_2_1, perceptron_2_2,     # perceptron_2_3,
                                         x_label, y_label, z_label,
-                                        *x_y_lines, output_label, output_label_2, output_label_3,
+                                        *x_y_lines, output_label, output_label_2, # output_label_3,
                                         *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
 
