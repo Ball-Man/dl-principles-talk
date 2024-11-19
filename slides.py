@@ -469,6 +469,7 @@ class LinearToNonLinear(Slide):
         output_label.font_size = formula_font_size
         output_label.next_to(perceptron, RIGHT).shift(RIGHT)
         x_y_lines = all_arrows((x_label, y_label), (perceptron,))
+        l1_connections_group = VGroup(*x_y_lines)
         output_line = neural_net_connection_arrow(perceptron.get_critical_point(RIGHT),
                                                   output_label.get_critical_point(LEFT))
         perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines, output_label,
@@ -500,6 +501,18 @@ class LinearToNonLinear(Slide):
                   floating_w_y.animate.become(x_y_lines[1]))
         # Silently remove the overlapping arrows
         self.play(FadeOut(floating_w_x), FadeOut(floating_w_y))
+        self.next_slide()
+
+        ## Slide: name perceptron
+        l1_brace = Brace(VGroup(perceptron, *x_y_lines), UP)
+        l1_brace_text = Tex('Perceptron', font_size=formula_font_size).next_to(l1_brace, UP)
+        l1_brace_group = VGroup(l1_brace, l1_brace_text)
+        # braces
+        # l1_brace_reference_group = l1_connections_group
+        # l1_brace_group.add_updater(lambda group: group.next_to(l1_brace_reference_group, UP,
+        #                                                        aligned_edge=LEFT))
+
+        self.play(Write(l1_brace_group))
         self.next_slide()
 
         ## Slide: multivaried function
@@ -546,7 +559,8 @@ class LinearToNonLinear(Slide):
         perceptron_group_multi = VGroup(perceptron, x_label, y_label, z_label, *x_y_lines,
                                         output_label, output_line).to_edge(LEFT).shift(perceptron_group_shift)
 
-        self.play(TransformMatchingShapes(regressor_matrix_formula,
+        self.play(l1_brace_group.animate.shift(UP * 0.5),
+                  TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
                   TransformMatchingShapes(function_def, function_def_multi),
                   FadeTransform(perceptron_group, perceptron_group_multi))
@@ -620,13 +634,26 @@ class LinearToNonLinear(Slide):
                                         *x_y_lines, output_label, output_label_2, # output_label_3,
                                         *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
-        self.play(TransformMatchingShapes(regressor_matrix_formula,
+        self.play(Transform(l1_brace_text, Tex('Layer', font_size=formula_font_size)
+                                           .next_to(l1_brace, UP)),
+                  TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
                   TransformMatchingShapes(function_def, function_def_multi),
                   FadeTransform(perceptron_group, perceptron_group_multi))
         regressor_matrix_formula = regressor_matrix_formula_multi
         function_def = function_def_multi
         perceptron_group = perceptron_group_multi
+        self.next_slide()
+
+        ## Slide: name layer
+        matrix_a_brace = Brace(VGroup(*regressor_matrix_formula_multi[0][17 : 30]), UP)
+        matrix_a_brace_text = (Tex('A', font_size=formula_font_size)
+                               .next_to(matrix_a_brace, UP))
+        matrix_a_brace_group = VGroup(matrix_a_brace, matrix_a_brace_text)
+
+        self.play(Write(matrix_a_brace_group),
+                  Transform(l1_brace_text, Tex('Layer A', font_size=formula_font_size)
+                                           .next_to(l1_brace, UP)))
         self.next_slide()
 
         ## Slide: more layers
@@ -668,6 +695,16 @@ class LinearToNonLinear(Slide):
             for glyph in regressor_matrix_formula_multi[0][weight_index : weight_index + 3]:
                 glyph.set_color(layer_1_colors[color_index])
 
+        # Add braces to the right places
+        new_matrix_a_brace = Brace(VGroup(*regressor_matrix_formula_multi[0][34 : 50]), UP)
+        new_matrix_a_brace_text = (Tex('A', font_size=formula_font_size)
+                                   .next_to(new_matrix_a_brace, UP))
+        new_matrix_a_brace_group = VGroup(new_matrix_a_brace, new_matrix_a_brace_text)
+
+        matrix_b_brace = Brace(VGroup(*regressor_matrix_formula_multi[0][17 : 29]), UP)
+        matrix_b_brace_text = (Tex('B', font_size=formula_font_size)
+                              .next_to(matrix_b_brace, UP))
+        matrix_b_brace_group = VGroup(matrix_b_brace, matrix_b_brace_text)
 
         # Update function def
         function_def_multi = MathTex(r'f: \mathbb{R}^3 \to \mathbb{R}^2')
@@ -698,11 +735,13 @@ class LinearToNonLinear(Slide):
         output_label.shift(UP)
         # output_label_3.shift(DOWN)
 
+        l2_lines = all_arrows((perceptron, perceptron_2),            # perceptron_3
+                              (perceptron_2_2, perceptron_2_1))      # perceptron_2_3
         x_y_lines = (
             all_arrows((x_label, y_label, z_label), (perceptron, perceptron_2))     # perceptron_3
-            + all_arrows((perceptron, perceptron_2),            # perceptron_3
-                         (perceptron_2_2, perceptron_2_1))      # perceptron_2_3
+            + l2_lines
         )
+
         color_lines(x_y_lines, layer_1_colors + layer_2_colors)
         output_lines = pair_arrows((perceptron_2_1, perceptron_2_2),        # perceptron_2_3
                                    (output_label_2, output_label))          # output_label_3
@@ -712,9 +751,17 @@ class LinearToNonLinear(Slide):
                                         *x_y_lines, output_label, output_label_2, # output_label_3,
                                         *output_lines).to_edge(LEFT).shift(perceptron_group_shift)
 
+        l2_brace = Brace(VGroup(perceptron_2_2, *l2_lines), UP)
+        l2_brace_text = Tex('Layer B', font_size=formula_font_size).next_to(l2_brace, UP)
+        l2_brace_group = VGroup(l2_brace, l2_brace_text)
 
         new_title = Text('Neural Network').to_edge(UP)
-        self.play(AnimationGroup(Unwrite(title), Write(new_title, reverse=True), lag_ratio=0.6),
+        self.play(# Braces
+                  Write(l2_brace_group),
+                  TransformMatchingShapes(matrix_a_brace_group, new_matrix_a_brace_group),
+                  Write(matrix_b_brace_group),
+
+                  AnimationGroup(Unwrite(title), Write(new_title, reverse=True), lag_ratio=0.6),
                   TransformMatchingShapes(regressor_matrix_formula,
                                           regressor_matrix_formula_multi),
                   TransformMatchingShapes(function_def, function_def_multi),
@@ -737,7 +784,8 @@ class LinearToNonLinear(Slide):
         regressor_concise_formula.to_edge(LEFT).shift(matrix_form_shift)
 
         self.play(TransformMatchingShapes(regressor_matrix_formula_multi,
-                                          regressor_concise_formula))
+                                          regressor_concise_formula),
+                  FadeOut(new_matrix_a_brace_group), FadeOut(matrix_b_brace_group))
 
         self.next_slide()
 
@@ -759,7 +807,8 @@ class LinearToNonLinear(Slide):
         self.play(FadeTransform(title, new_title),
                   TransformMatchingShapes(regressor_concise_formula,
                                           regressor_concise_formula_deep1),
-                  FadeOut(perceptron_group))
+                  FadeOut(perceptron_group),
+                  FadeOut(l1_brace_group, l2_brace_group))
         self.play(AnimationGroup(Wait(0.5),
                                  TransformMatchingShapes(regressor_concise_formula_deep1,
                                                          regressor_concise_formula_deep2),
