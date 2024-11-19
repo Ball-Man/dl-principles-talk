@@ -452,12 +452,13 @@ class LinearToNonLinear(Slide):
             \end{array} \right]
             \right)
             = output
-            '''
-        )
-        regressor_matrix_formula.font_size = formula_font_size
+            ''',
+            font_size=formula_font_size
+        ).next_to(regressor_formula, DOWN)
 
         # Animate the expression
-        self.play(TransformMatchingShapes(regressor_formula, regressor_matrix_formula))
+        self.play(TransformMatchingShapes(regressor_formula.copy(), regressor_matrix_formula))
+        old_regressor_formula = regressor_formula
         self.next_slide()
 
         ## Slide: the perceptron
@@ -473,10 +474,10 @@ class LinearToNonLinear(Slide):
         perceptron_group = VGroup(perceptron, x_label, y_label, *x_y_lines, output_label,
                                   output_line).to_edge(LEFT).shift(perceptron_group_shift)
 
-        self.play(function_def.animate.to_edge(LEFT),
+        self.play(FadeOut(old_regressor_formula), function_def.animate.to_edge(LEFT),
                   regressor_matrix_formula.animate.to_edge(LEFT))
         self.play(function_def.animate.shift(2 * UP),
-                  regressor_matrix_formula.animate.shift(matrix_form_shift),
+                  regressor_matrix_formula.animate.shift(matrix_form_shift + UP),
                   Write(perceptron_group, lag_ratio=0))
         self.next_slide()
 
