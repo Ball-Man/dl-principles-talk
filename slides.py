@@ -344,7 +344,7 @@ class Logistic(ThreeDSlide):
             w_label_displacement_z.animate.set_value(w_label_displacement_vec[2]),
             w2_label_displacement_z.animate.set_value(3)])
 
-        self.play(Write(x_z_axes))
+        self.play(AnimationGroup(FadeOut(plane), Write(x_z_axes), lag_ratio=1.))
 
         line_equation.remove_updater(line_equation_updater)
 
