@@ -121,7 +121,9 @@ class AIFamily(Slide):
         dl_yolo = Text('YOLO', font_size=child_font_size, color=DL_COLOR)
         dl_midline = VGroup(dl_gpt, dl_yolo).arrange(RIGHT)
         dl_deeplab = Text('DeepLabCut', font_size=child_font_size, color=DL_COLOR)
-        dl_children_group = (VGroup(dl_neural_nets, dl_midline, dl_deeplab)
+        dl_ellipses = Text('...', font_size=child_font_size, color=DL_COLOR)
+        dl_lastline = VGroup(dl_deeplab, dl_ellipses).arrange(RIGHT)
+        dl_children_group = (VGroup(dl_neural_nets, dl_midline, dl_lastline)
                              .arrange(2 * DOWN).shift(DOWN + LEFT * 2.5)
                              .move_to(dl_subset))
 
