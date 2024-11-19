@@ -195,22 +195,22 @@ class Logistic(ThreeDSlide):
         # Create line equation
         equation_font_size = 30
         def get_line_equation(text: str):
-            tex = MathTex(text, substrings_to_isolate=['w_1', 'x', 'w_2', 'y', 'b'])
-            tex.set_color_by_tex('w_1', W1_COLOR)
-            tex.set_color_by_tex('w_2', W2_COLOR)
+            tex = MathTex(text, substrings_to_isolate=['w_x', 'x', 'w_y', 'y', 'b'])
+            tex.set_color_by_tex('w_x', W1_COLOR)
+            tex.set_color_by_tex('w_y', W2_COLOR)
             tex.font_size = equation_font_size
             return tex
 
-        line_equation = get_line_equation('w_1x + w_2y + b = 0').shift(UP * 3 + LEFT * 2)
+        line_equation = get_line_equation('w_xx + w_yy + b = 0').shift(UP * 3 + LEFT * 2)
 
         def get_w1_tex() -> MathTex:
-            label = MathTex(f'w_1 = {{{{ {line_w1.get_value():.2f} }}}}')
+            label = MathTex(f'w_x = {{{{ {line_w1.get_value():.2f} }}}}')
             label.submobjects[1].color = W1_COLOR
             label.font_size = equation_font_size
             return label
 
         def get_w2_tex() -> MathTex:
-            label = MathTex(f'w_2 = {{{{ {line_w2.get_value():.2f} }}}}')
+            label = MathTex(f'w_y = {{{{ {line_w2.get_value():.2f} }}}}')
 
             label.submobjects[1].color = W2_COLOR
             label.font_size = equation_font_size
@@ -275,7 +275,7 @@ class Logistic(ThreeDSlide):
         w2_label.remove_updater(tex_w2_updater)
 
         old_line_equation = line_equation
-        line_equation = get_line_equation('z = w_1x + w_2y + b').shift(UP * 3 + LEFT * 2)
+        line_equation = get_line_equation('z = w_xx + w_yy + b').shift(UP * 3 + LEFT * 2)
         equation_group.remove(old_line_equation)
         equation_group.add(line_equation)
         self.play(TransformMatchingTex(old_line_equation, line_equation))
@@ -339,7 +339,7 @@ class Logistic(ThreeDSlide):
 
         ## Slide: sigmoid
         old_line_equation = line_equation
-        line_equation = (get_line_equation(r'z = \sigma(w_1x + w_2y + b)')
+        line_equation = (get_line_equation(r'z = \sigma(w_xx + w_yy + b)')
                          .move_to(line_equation, LEFT).rotate(PI / 2, axis=RIGHT))
 
         sigmoid_label = (MathTex(r'\sigma(t) = \frac{1}{1 + e^{-t}}')
