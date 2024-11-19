@@ -307,6 +307,9 @@ class Logistic(ThreeDSlide):
 
         self.next_slide()
 
+        x_z_axes = Axes(plot_range_x, (-6, +6), x_length=15, y_length=8)
+        x_z_axes.add_coordinates().rotate(PI / 2, RIGHT)
+
         ## Slide: show dots on plane
         def dot_z(dot: Dot):
             # z = w1 * x + w2 * y + b
@@ -328,7 +331,8 @@ class Logistic(ThreeDSlide):
         # elegantly.
         w_label_displacement_vec += 3.5 * OUT
         self.move_camera(phi=PI / 2, added_anims=[
-            *(dot.animate.set_z(dot_z(dot)) for dot in chain(dots_a, dots_b)),
+            *(dot.animate.set_z(x_z_axes.c2p(0, dot_z(dot), 0)[2])
+              for dot in chain(dots_a, dots_b)),
             # Hide extra stuff from the scene
             FadeOut(line),
             FadeOut(top_rect),
@@ -340,10 +344,12 @@ class Logistic(ThreeDSlide):
             w_label_displacement_z.animate.set_value(w_label_displacement_vec[2]),
             w2_label_displacement_z.animate.set_value(3)])
 
+        self.play(Write(x_z_axes))
+
         line_equation.remove_updater(line_equation_updater)
 
         def dot_updater(dot: Dot):
-            return dot.set_z(dot_z(dot))
+            return dot.set_z(x_z_axes.c2p(0, dot_z(dot), 0)[2])
 
         for dot in chain(dots_a, dots_b):
             dot.add_updater(dot_updater)
@@ -374,17 +380,17 @@ class Logistic(ThreeDSlide):
         for dot in chain(dots_a, dots_b):
             dot.remove_updater(dot_updater)
 
-        dots_sig_z = sigmoid(np.array([dot.get_z() for dot in chain(dots_a, dots_b)]))
+        dots_sig_z = sigmoid(np.array([dot_z(dot) for dot in chain(dots_a, dots_b)]))
 
         self.play(TransformMatchingTex(old_line_equation, line_equation),
                   Write(sigmoid_label),
                   # Sigmoid the dots
-                  *(dot.animate.set_z(new_z) for dot, new_z in zip(chain(dots_a, dots_b),
-                                                                   dots_sig_z)))
+                  *(dot.animate.set_z(x_z_axes.c2p(0, new_z, 0)[2])
+                    for dot, new_z in zip(chain(dots_a, dots_b), dots_sig_z)))
         self.next_slide(loop=True)
 
         def dot_sigmoid_updater(dot: Dot):
-            return dot.set_z(sigmoid(dot_z(dot)))
+            return dot.set_z(x_z_axes.c2p(0, sigmoid(dot_z(dot)), 0)[2])
 
         for dot in chain(dots_a, dots_b):
             dot.add_updater(dot_sigmoid_updater)
