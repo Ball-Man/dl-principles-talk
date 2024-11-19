@@ -128,6 +128,14 @@ class AIFamily(Slide):
         self.play(Write(dl_children_group))
         self.next_slide()
 
+        ## Slide: focus
+        all_dl_group = VGroup(dl_children_group, dl_subset, dl_subset_label)
+        self.play(FadeOut(ai_set), FadeOut(ai_set_label), FadeOut(ai_children_group),
+                  FadeOut(ml_subset), FadeOut(ml_subset_label), FadeOut(ml_children_group),
+                  FadeOut(title))
+        self.play(all_dl_group.animate.move_to(ORIGIN))
+        self.next_slide()
+
 
 class Logistic(ThreeDSlide):
     rng = np.random.default_rng(213)
