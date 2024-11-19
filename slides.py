@@ -50,6 +50,8 @@ class AIFamily(Slide):
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
+        child_font_size = 25
+
         ## Slide: title
         title = Text('The AI Family')
         self.add(title)
@@ -64,20 +66,66 @@ class AIFamily(Slide):
                               AnimationGroup(Create(ai_set), Write(ai_set_label)), lag_ratio=0.5))
         self.next_slide()
 
+        ## Slide: Some general AI Examples
+        ai_rule_based = Text('Rule based systems', font_size=child_font_size)
+        ai_chess_bots = Text('Chess bots', font_size=child_font_size)
+        ai_ellipses = Text('...', font_size=child_font_size)
+        ai_children_group = VGroup(ai_rule_based, ai_chess_bots, ai_ellipses).arrange(2 * DOWN)
+        self.play(Write(ai_children_group))
+        self.next_slide()
+
         ## Slide: ML subset
         ml_subset = Circle(5 / 2, color=ML_COLOR).shift(DOWN)
         ml_subset_label = Text('ML').move_to(ml_subset, UL).shift(DR / 3 * 2)
         ml_subset_label.color = ml_subset.stroke_color
         ml_subset_label.font_size = 30
+        # Shift old elements away
+        self.play(ai_set.animate.stretch_to_fit_width(14),
+                  ai_rule_based.animate.to_edge(RIGHT),
+                  ai_chess_bots.animate.to_edge(RIGHT),
+                  ai_ellipses.animate.to_edge(RIGHT),
+                  ai_set_label.animate.to_edge(LEFT))
         self.play(Create(ml_subset), Write(ml_subset_label))
         self.next_slide()
 
+        ## Slide: some ML examples
+        ml_umap = Text('UMAP', font_size=child_font_size, color=ML_COLOR)
+        ml_clustering = Text('DBSCAN', font_size=child_font_size, color=ML_COLOR)
+        ml_linear = Text('Linear Regression', font_size=child_font_size, color=ML_COLOR)
+        ml_ellipses = Text('...', font_size=child_font_size, color=ML_COLOR)
+        ml_children_group = VGroup(ml_umap, ml_clustering,
+                                   ml_linear, ml_ellipses).arrange(2 * DOWN).shift(DOWN)
+        self.play(Write(ml_children_group))
+        self.next_slide()
+
         ## Slide: DL subset
-        dl_subset = Circle(3 / 2, color=DL_COLOR).shift(DOWN)
-        dl_subset_label = Text('DL').move_to(dl_subset, UL).shift(DR / 2)
+        dl_subset = RoundedRectangle(width=4, height=4, color=DL_COLOR).shift(DOWN + LEFT * 3)
+        dl_subset_label = Text('DL').move_to(dl_subset, UL).shift(DR / 4)
         dl_subset_label.color = dl_subset.stroke_color
         dl_subset_label.font_size = 30
+        # Shift old elements away
+        right_border = np.array([config["frame_x_radius"], 0, 0])
+        self.play(ml_subset.animate.become(RoundedRectangle(width=9, height=5, color=ML_COLOR)
+                                           .shift(DOWN + LEFT * 1.5)),
+                  ml_subset_label.animate.shift(LEFT * 4 + UP * 0.5),
+                  ml_umap.animate.move_to(right_border + 4.5 * LEFT, RIGHT),
+                  ml_clustering.animate.move_to(right_border + 4.5 * LEFT + DOWN, RIGHT),
+                  ml_linear.animate.move_to(right_border + 4.5 * LEFT + DOWN * 2, RIGHT),
+                  ml_ellipses.animate.move_to(right_border + 4.5 * LEFT + DOWN * 3, RIGHT))
         self.play(Create(dl_subset), Write(dl_subset_label))
+        self.next_slide()
+
+        ## Slide: some DL examples
+        dl_neural_nets = Text('Neural Networks', font_size=child_font_size, color=DL_COLOR)
+        dl_gpt = Text('GPT', font_size=child_font_size, color=DL_COLOR)
+        dl_yolo = Text('YOLO', font_size=child_font_size, color=DL_COLOR)
+        dl_midline = VGroup(dl_gpt, dl_yolo).arrange(RIGHT)
+        dl_deeplab = Text('DeepLabCut', font_size=child_font_size, color=DL_COLOR)
+        dl_children_group = (VGroup(dl_neural_nets, dl_midline, dl_deeplab)
+                             .arrange(2 * DOWN).shift(DOWN + LEFT * 2.5)
+                             .move_to(dl_subset))
+
+        self.play(Write(dl_children_group))
         self.next_slide()
 
 
