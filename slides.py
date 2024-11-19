@@ -258,6 +258,28 @@ class Logistic(ThreeDSlide):
 
         self.play(Create(line), Create(top_rect), Write(line_equation), Write(w1_label),
                   Write(w2_label))
+        self.next_slide()
+
+        ## Slide: show parameters
+        weights_or_params = Tex('Weights/Parameters', font_size=20).next_to(top_rect, 2 * UP,
+                                                                            aligned_edge=LEFT)
+        w1_copy = line_equation[0].copy()
+        w2_copy = line_equation[3].copy()
+        b_copy = line_equation[6].copy()
+        params_copy_group = (VGroup(w1_copy, w2_copy, b_copy).arrange(RIGHT)
+                                                             .next_to(weights_or_params, RIGHT))
+
+        self.move_camera(frame_center=top_rect, zoom=2.)
+        self.play(ReplacementTransform(line_equation[0].copy(), w1_copy),
+                  ReplacementTransform(line_equation[3].copy(), w2_copy),
+                  ReplacementTransform(line_equation[6].copy(), b_copy))
+        self.play(Write(weights_or_params))
+        self.next_slide()
+
+        ## Slide: back to the line
+        self.move_camera(frame_center=ORIGIN, zoom=1., added_anims=[FadeOut(weights_or_params),
+                                                                    FadeOut(params_copy_group)])
+
         self.next_slide(loop=True)
 
         ## Slide: plausible lines
