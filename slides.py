@@ -60,7 +60,8 @@ class AIFamily(Slide):
         ai_set = RoundedRectangle(width=6, height=6).shift(DOWN)
         ai_set_label = Text('AI').move_to(ai_set, UL).shift(DR / 4)
         ai_set_label.font_size = 30
-        self.play(LaggedStart(title.animate.to_edge(UP), AnimationGroup(Create(ai_set), Write(ai_set_label)), lag_ratio=0.5))
+        self.play(LaggedStart(title.animate.to_edge(UP),
+                              AnimationGroup(Create(ai_set), Write(ai_set_label)), lag_ratio=0.5))
         self.next_slide()
 
         ## Slide: ML subset
@@ -556,8 +557,9 @@ class LinearToNonLinear(Slide):
         color_lines(x_y_lines, layer_1_colors)
         output_line = Arrow(perceptron.get_critical_point(RIGHT),
                             output_label.get_critical_point(LEFT))
-        perceptron_group_multi = VGroup(perceptron, x_label, y_label, z_label, *x_y_lines,
-                                        output_label, output_line).to_edge(LEFT).shift(perceptron_group_shift)
+        perceptron_group_multi = (VGroup(perceptron, x_label, y_label, z_label, *x_y_lines,
+                                         output_label, output_line)
+                                        .to_edge(LEFT).shift(perceptron_group_shift))
 
         self.play(l1_brace_group.animate.shift(UP * 0.5),
                   TransformMatchingShapes(regressor_matrix_formula,
@@ -716,10 +718,12 @@ class LinearToNonLinear(Slide):
                             Text('+', color=perceptron_color)).shift(DOWN * 0.5)
         perceptron_2 = VGroup(Circle(0.2, color=perceptron_color),
                               Text('+', color=perceptron_color)).shift(UP * 0.5)
-        perceptron_2_1 = VGroup(Circle(0.2, color=perceptron_color),
-                                Text('+', color=perceptron_color)).next_to(perceptron, RIGHT).shift(RIGHT)
-        perceptron_2_2 = VGroup(Circle(0.2, color=perceptron_color),
-                                Text('+', color=perceptron_color)).next_to(perceptron_2, RIGHT).shift(RIGHT)
+        perceptron_2_1 = (VGroup(Circle(0.2, color=perceptron_color),
+                                 Text('+', color=perceptron_color))
+                                 .next_to(perceptron, RIGHT).shift(RIGHT))
+        perceptron_2_2 = (VGroup(Circle(0.2, color=perceptron_color),
+                                Text('+', color=perceptron_color))
+                                .next_to(perceptron_2, RIGHT).shift(RIGHT))
 
         x_label = MathTex('x').next_to(perceptron, LEFT).shift(UL + UP * 0.5)
         y_label = MathTex('y').next_to(perceptron, LEFT).shift(LEFT + UP * 0.5)
@@ -837,13 +841,15 @@ class WhyNeuralNetworks(Slide):
 
         ## Slide: universal approximators
         universal_approximators_text = Text(
-            'Multilayer feedforward networks are universal\napproximators (Hornik & Stinchcombe & White, 1989)',
+            'Multilayer feedforward networks are universal\napproximators '
+            '(Hornik & Stinchcombe & White, 1989)',
             font_size=body_text_size
         )
         flexibility_text = Text('Computational cost trade off', font_size=body_text_size)
         prob_output_text = Text('Probabilistic Output', font_size=body_text_size)
 
-        neural_network_body = VGroup(universal_approximators_text, flexibility_text, prob_output_text)
+        neural_network_body = VGroup(universal_approximators_text, flexibility_text,
+                                     prob_output_text)
         neural_network_body.arrange(3 * DOWN, aligned_edge=LEFT).to_edge(LEFT)
 
         self.play(AnimationGroup(why_title.animate.to_edge(UP),
@@ -964,7 +970,7 @@ class Criterion(Slide):
                                                    aligned_edge=ORIGIN))
 
         reduced_criterion = local_grid(
-            MathTex(f'{{{{ \sum_{{x, y}} l_f(x, y) }}}} = {criterion_results.sum():.2f}'),
+            MathTex(f'{{{{ \\sum_{{x, y}} l_f(x, y) }}}} = {criterion_results.sum():.2f}'),
             4, 2, aligned_edge=LEFT)
         reduction_arrow_group = VGroup(*all_arrows(criterion_results_group.submobjects,
                                                    (reduced_criterion,)))
@@ -980,7 +986,8 @@ class Criterion(Slide):
         self.play(FadeOut(lines_group), FadeOut(table_group), FadeOut(predictions_column_group),
                   FadeOut(reduction_arrow_group), FadeOut(criterion_results_group),
                   FadeOut(fx_header))
-        self.play(TransformMatchingTex(reduced_criterion, objective), criterion.animate.move_to(UP))
+        self.play(TransformMatchingTex(reduced_criterion, objective),
+                  criterion.animate.move_to(UP))
         self.play(Create(objective_highlight))
         self.next_slide()
 
