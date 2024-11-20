@@ -1058,6 +1058,14 @@ class Criterion(Slide):
                                                   - net_x_mean) / net_x_std)[:, 1].item()
         network_plot = axes.plot(f, color=neural_net_color)
 
+        # Don't use the real loss function of this model, because it
+        # was trained with CE, not MSA as shown in the example.
+        total_loss_value = np.abs(
+            skorch_model.predict_proba((data[0].reshape(-1, 1).astype(np.float32)
+                                        - net_x_mean) / net_x_std)[:, 1]
+            - data[1]
+        ).sum()
+
         # Move the network definition away, color code and plot
         self.play(FadeOut(enjoy_text), regressor_formula.animate.to_edge(UP))
         self.play(regressor_formula[0].animate.set_color(neural_net_color),
@@ -1078,6 +1086,17 @@ class Criterion(Slide):
 
         error_lines_group.set_z_index(dots_groups[0].z_index - 1)
         self.play(Write(error_text), Create(error_lines_group))
+        self.next_slide()
+
+        ## Slide: total loss
+        total_error_text = MathTex(f'total\\:loss = {total_loss_value:.2f}',
+                                   substrings_to_isolate=[r'total\:loss', '='])
+        total_error_text[0].set_color(error_color)
+        total_error_text.next_to(error_text, DOWN, aligned_edge=LEFT)
+
+        self.play(Transform(error_lines_group.copy(), total_error_text[-1]))
+        self.play(AnimationGroup(*(Write(part) for part in total_error_text[:-1]),
+                                 lag_ratio=0.3))
         self.next_slide()
 
         ## Slide: from class label to 0-1
