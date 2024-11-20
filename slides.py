@@ -1044,7 +1044,7 @@ class Criterion(Slide):
         ## Slide: the network
         enjoy_text = Tex('Enjoy your network :)').shift(2.5 * UP)
         regressor_formula = MathTex(r'f(x) = \sigma(\,B\: \sigma(\,A x\,)\,)',
-                                    substrings_to_isolate=['f(x)']).shift(1.5 * UP)
+                                    substrings_to_isolate=['f(x)', 'B', 'A']).shift(1.5 * UP)
 
         self.play(Write(enjoy_text), Write(regressor_formula))
         self.next_slide()
@@ -1094,9 +1094,26 @@ class Criterion(Slide):
         total_error_text[0].set_color(error_color)
         total_error_text.next_to(error_text, DOWN, aligned_edge=LEFT)
 
-        self.play(Transform(error_lines_group.copy(), total_error_text[-1]))
+        self.play(ReplacementTransform(error_lines_group.copy(), total_error_text[-1]))
         self.play(AnimationGroup(*(Write(part) for part in total_error_text[:-1]),
                                  lag_ratio=0.3))
+        self.next_slide()
+
+        ## Slide: objective
+        objective_text = Tex(r'Find {{ $A$ }} and {{ $B$ }} \\that minimize the {{ $total\:loss$ }}')
+        objective_text[5].set_color(error_color)
+        objective_text.shift(2 * UP)
+
+        regressor_formula_copy = regressor_formula.copy()
+        self.play(TransformMatchingShapes(total_error_text, objective_text[5]),
+                  TransformMatchingShapes(regressor_formula_copy[4], objective_text[1]),
+                  TransformMatchingShapes(regressor_formula_copy[2], objective_text[3]),
+                  FadeOut(regressor_formula),
+                  FadeOut(error_text))
+        self.add(objective_text[5].copy())
+        self.add(objective_text[1].copy())
+        self.add(objective_text[3].copy())
+        self.play(Write(objective_text))
         self.next_slide()
 
         ## Slide: from class label to 0-1
