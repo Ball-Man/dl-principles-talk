@@ -958,6 +958,7 @@ class Criterion(Slide):
 
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
+        class_colors = CLASS_A_COLOR, CLASS_B_COLOR
 
         ## Slide: title
         title = Text('How to Train Your Network')
@@ -966,13 +967,13 @@ class Criterion(Slide):
         self.next_slide()
 
         ## Slide: a network
-        function_def = MathTex(r'f: \mathbb{R} \to \mathbb{R}').shift(UP)
-        regressor_formula = MathTex(r'f(x) = \sigma(\,W_2\: \sigma(\,W_1 x\,)\,)',
-                                    substrings_to_isolate=['f(x)'])
+        # function_def = MathTex(r'f: \mathbb{R} \to \mathbb{R}').shift(UP)
+        # regressor_formula = MathTex(r'f(x) = \sigma(\,W_2\: \sigma(\,W_1 x\,)\,)',
+        #                             substrings_to_isolate=['f(x)'])
 
         self.play(FadeOut(title))
-        self.play(Write(function_def), Write(regressor_formula))
-        self.next_slide()
+        # self.play(Write(function_def), Write(regressor_formula))
+        # self.next_slide()
 
         ## Slide: the data
         # Define data
@@ -980,7 +981,7 @@ class Criterion(Slide):
         label_map = ['A', 'B']
 
         # Define grid
-        local_grid_config = {'origin': UP + 5 * LEFT, 'horizontal_spacing': 1.5 * RIGHT,
+        local_grid_config = {'origin': 2 * UP + 2 * LEFT, 'horizontal_spacing': 1.5 * RIGHT,
                              'vertical_spacing': DOWN * 0.5}
         local_grid = partial(place_in_grid, **local_grid_config)
         local_grid_position = partial(grid_position, **local_grid_config)
@@ -1001,7 +1002,8 @@ class Criterion(Slide):
         # Populate table with initial data
         for y_index, (x, y) in enumerate(data.T):
             table_group.add(local_grid(MathTex(str(x)), 0, y_index))
-            y_label = local_grid(MathTex(label_map[int(y)]), 1, y_index, aligned_edge=ORIGIN)
+            y_label = local_grid(MathTex(label_map[int(y)], color=class_colors[int(y)]),
+                                 1, y_index, aligned_edge=ORIGIN)
             labels_columns_group.add(y_label)
             table_group.add(y_label)
 
@@ -1010,73 +1012,88 @@ class Criterion(Slide):
                                local_grid_position(x_index + 0.5, data.shape[1]))
             lines_group.add(column_line)
 
-        self.play(AnimationGroup(function_def.animate.to_corner(UL),
-                                 regressor_formula.animate.to_edge(UP),
-                                 lag_ratio=0.1))
         self.play(Create(lines_group, lag_ratio=0.2))
         self.play(Write(table_group))
         self.next_slide()
 
+        ## Slide: to plot
+        axes = Axes((-1, 11), (0, 1.5), tips=False, y_length=4)
+        axes.add_coordinates()
+
+        dots_groups = [VGroup(), VGroup()]
+        for x, y in data.T:
+            label = int(y)
+            dots_groups[label].add(Dot(axes.c2p(x, 0, 0), color=class_colors[label]))
+
+        self.play(ReplacementTransform(lines_group, axes.axes[0]))
+        self.play(ReplacementTransform(table_group, dots_groups[0] + dots_groups[1]))
+        self.next_slide()
+
+        ## Slide: move them up
+        self.play(Write(axes.axes[1]),
+                  *(dot.animate.set_y(axes.c2p(0, 1, 0)[1]) for dot in dots_groups[1]))
+        self.next_slide()
+
         ## Slide: from class label to 0-1
-        numeric_labels_columns = VGroup(
-            *(local_grid(MathTex(str(y)), 1, y_index, aligned_edge=ORIGIN)
-              for y_index, y in enumerate(data[1]))
-        )
+        # numeric_labels_columns = VGroup(
+        #     *(local_grid(MathTex(str(y)), 1, y_index, aligned_edge=ORIGIN)
+        #       for y_index, y in enumerate(data[1]))
+        # )
 
-        self.play(FadeTransform(labels_columns_group, numeric_labels_columns))
-        table_group.remove(*labels_columns_group.submobjects)
-        table_group.add(*numeric_labels_columns.submobjects)
-        self.next_slide()
+        # self.play(FadeTransform(labels_columns_group, numeric_labels_columns))
+        # table_group.remove(*labels_columns_group.submobjects)
+        # table_group.add(*numeric_labels_columns.submobjects)
+        # self.next_slide()
 
-        ## Slide: predictions
-        predictions = np.array([0.92, 0.4, 0.12, 0.7, 0.9, 0.2, 0.3, 0.8])
+        # ## Slide: predictions
+        # predictions = np.array([0.92, 0.4, 0.12, 0.7, 0.9, 0.2, 0.3, 0.8])
 
-        prediction_line = Line(local_grid_position(2.5, -1.5),
-                               local_grid_position(2.5, data.shape[1]))
-        lines_group.add(prediction_line)
+        # prediction_line = Line(local_grid_position(2.5, -1.5),
+        #                        local_grid_position(2.5, data.shape[1]))
+        # lines_group.add(prediction_line)
 
-        fx_header = local_grid(MathTex('f(x)'), 2, -1, aligned_edge=ORIGIN)
-        predictions_column_group = VGroup()
-        for y_index, prediction in enumerate(predictions):
-            predictions_column_group.add(local_grid(MathTex(str(prediction)), 2, y_index,
-                                                    aligned_edge=ORIGIN))
+        # fx_header = local_grid(MathTex('f(x)'), 2, -1, aligned_edge=ORIGIN)
+        # predictions_column_group = VGroup()
+        # for y_index, prediction in enumerate(predictions):
+        #     predictions_column_group.add(local_grid(MathTex(str(prediction)), 2, y_index,
+        #                                             aligned_edge=ORIGIN))
 
-        self.play(Create(prediction_line),
-                  TransformMatchingShapes(regressor_formula.submobjects[0].copy(), fx_header))
-        self.play(Write(predictions_column_group))
-        self.next_slide()
+        # # self.play(Create(prediction_line),
+        # #           TransformMatchingShapes(regressor_formula.submobjects[0].copy(), fx_header))
+        # self.play(Write(predictions_column_group))
+        # self.next_slide()
 
-        ## Slide: criterion
-        criterion_results = np.abs(data[1] - predictions)
-        print(criterion_results)
+        # ## Slide: criterion
+        # criterion_results = np.abs(data[1] - predictions)
+        # print(criterion_results)
 
-        criterion = local_grid(MathTex('l_f(x, y) = |f(x) - y|'), 2.75, -1, aligned_edge=LEFT)
-        criterion_results_group = VGroup()
-        for y_index, criterion_value in enumerate(criterion_results):
-            criterion_results_group.add(local_grid(MathTex(f'{criterion_value:.2f}'), 3, y_index,
-                                                   aligned_edge=ORIGIN))
+        # criterion = local_grid(MathTex('l_f(x, y) = |f(x) - y|'), 2.75, -1, aligned_edge=LEFT)
+        # criterion_results_group = VGroup()
+        # for y_index, criterion_value in enumerate(criterion_results):
+        #     criterion_results_group.add(local_grid(MathTex(f'{criterion_value:.2f}'), 3, y_index,
+        #                                            aligned_edge=ORIGIN))
 
-        reduced_criterion = local_grid(
-            MathTex(f'{{{{ \\sum_{{x, y}} l_f(x, y) }}}} = {criterion_results.sum():.2f}'),
-            4, 2, aligned_edge=LEFT)
-        reduction_arrow_group = VGroup(*all_arrows(criterion_results_group.submobjects,
-                                                   (reduced_criterion,)))
+        # reduced_criterion = local_grid(
+        #     MathTex(f'{{{{ \\sum_{{x, y}} l_f(x, y) }}}} = {criterion_results.sum():.2f}'),
+        #     4, 2, aligned_edge=LEFT)
+        # reduction_arrow_group = VGroup(*all_arrows(criterion_results_group.submobjects,
+        #                                            (reduced_criterion,)))
 
-        self.play(Write(criterion), Write(criterion_results_group))
-        self.play(Create(reduction_arrow_group), Write(reduced_criterion))
-        self.next_slide()
+        # self.play(Write(criterion), Write(criterion_results_group))
+        # self.play(Create(reduction_arrow_group), Write(reduced_criterion))
+        # self.next_slide()
 
-        ## Slide: objective
-        objective = MathTex(r'\min_{W_1, W_2} {{ \sum_{x, y} l_f(x, y) }}').shift(DOWN)
-        objective_highlight = SurroundingRectangle(objective)
+        # ## Slide: objective
+        # objective = MathTex(r'\min_{W_1, W_2} {{ \sum_{x, y} l_f(x, y) }}').shift(DOWN)
+        # objective_highlight = SurroundingRectangle(objective)
 
-        self.play(FadeOut(lines_group), FadeOut(table_group), FadeOut(predictions_column_group),
-                  FadeOut(reduction_arrow_group), FadeOut(criterion_results_group),
-                  FadeOut(fx_header))
-        self.play(TransformMatchingTex(reduced_criterion, objective),
-                  criterion.animate.move_to(UP))
-        self.play(Create(objective_highlight))
-        self.next_slide()
+        # self.play(FadeOut(lines_group), FadeOut(table_group), FadeOut(predictions_column_group),
+        #           FadeOut(reduction_arrow_group), FadeOut(criterion_results_group),
+        #           FadeOut(fx_header))
+        # self.play(TransformMatchingTex(reduced_criterion, objective),
+        #           criterion.animate.move_to(UP))
+        # self.play(Create(objective_highlight))
+        # self.next_slide()
 
 
 class GradientDescent(ThreeDSlide):
