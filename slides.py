@@ -146,6 +146,8 @@ class Logistic(ThreeDSlide):
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
 
+        sigmoid_color = BLUE_D
+
         ## Slide: build plane and dots
         plot_range_x = (-2, 15)
         plot_range_y = (-2, 10)
@@ -390,7 +392,7 @@ class Logistic(ThreeDSlide):
         line_equation = (get_line_equation(r'z = \sigma(w_xx + w_yy + b)')
                          .move_to(line_equation, LEFT).rotate(PI / 2, axis=RIGHT))
 
-        sigmoid_label = (MathTex(r'\sigma(t) = \frac{1}{1 + e^{-t}}')
+        sigmoid_label = (MathTex(r'{{ \sigma(t) }} = \frac{1}{1 + e^{-t}}')
                          .next_to(line_equation, 3 * RIGHT)
                          .shift(2 * UP)
                          .rotate(PI / 2, RIGHT))
@@ -429,12 +431,14 @@ class Logistic(ThreeDSlide):
         ## Slide: show sigmoid
         # Points are aligned in an extreme plane with w_2 = 0 in order
         # to get the most out of the perspective.
-        sigmoid_plot = x_z_axes.plot(lambda x: sigmoid((10 * x - 80) / 5))
+        sigmoid_plot = x_z_axes.plot(lambda x: sigmoid((10 * x - 80) / 5), color=sigmoid_color)
         self.play(line_w2.animate.set_value(0), line_w1.animate.set_value(10),
                   line_b.animate.set_value(-80),
                   # Move all points on the x axis. This is a trick but clearly displays the sigmoid
                   *(dot.animate.set_y(0) for dot in chain(dots_a, dots_b)))
-        self.play(Write(sigmoid_plot))
+        self.play(Write(sigmoid_plot), sigmoid_label[0].animate.set_color(sigmoid_color),
+                  Write(Text('sigmoid', font_size=30, color=sigmoid_color)
+                        .next_to(line_at_1, OUT).rotate(PI / 2, RIGHT)))
         self.next_slide()
 
 
@@ -1114,7 +1118,7 @@ class Criterion(Slide):
                                                        network_plot),
                                        color=error_color))
 
-        error_text = MathTex('loss = |\,f(x) - c\,|', substrings_to_isolate=['loss'])
+        error_text = MathTex(r'loss = |\,f(x) - c\,|', substrings_to_isolate=['loss'])
         error_text[0].set_color(error_color)
         error_text.next_to(regressor_formula, DOWN, aligned_edge=LEFT)
 
