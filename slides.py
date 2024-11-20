@@ -423,6 +423,15 @@ class Logistic(ThreeDSlide):
                   line_b.animate.set_value(-9))
         self.next_slide()
 
+        ## Slide: show sigmoid
+        # Points are aligned in an extreme plane with w_2 = 0 in order
+        # to get the most out of the perspective.
+        sigmoid_plot = x_z_axes.plot(lambda x: sigmoid((10 * x - 80) / 5))
+        self.play(line_w2.animate.set_value(0), line_w1.animate.set_value(10),
+                  line_b.animate.set_value(-80))
+        self.play(Write(sigmoid_plot))
+        self.next_slide()
+
 
 class WhyLogistic(Slide):
 
