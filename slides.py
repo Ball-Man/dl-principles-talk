@@ -977,7 +977,46 @@ class WhyNeuralNetworks(Slide):
         neural_network_body.arrange(3 * DOWN, aligned_edge=LEFT).to_edge(LEFT)
 
         self.play(AnimationGroup(why_title.animate.to_edge(UP),
-                                 Write(neural_network_body), lag_ratio=0.6))
+                                 Write(universal_approximators_text), lag_ratio=0.6))
+        self.next_slide()
+
+        ## Slide: linear vs nonlinear
+        linear_axes = Axes((0, 5), (0, 5), 3, 3)
+        nonlinear_axes = Axes((0, 5), (0, 5), 3, 3)
+        VGroup(linear_axes, nonlinear_axes).arrange(RIGHT, buff=4).shift(DOWN * 2)
+
+        linear_dots = VGroup(
+            Dot(linear_axes.c2p(1, 2), color=CLASS_A_COLOR),
+            Dot(linear_axes.c2p(2, 1), color=CLASS_A_COLOR),
+            Dot(linear_axes.c2p(4, 3), color=CLASS_B_COLOR),
+            Dot(linear_axes.c2p(3, 4), color=CLASS_B_COLOR))
+
+        nonlinear_dots = VGroup(
+            Dot(nonlinear_axes.c2p(1, 1), color=CLASS_A_COLOR),
+            Dot(nonlinear_axes.c2p(4, 1), color=CLASS_A_COLOR),
+            Dot(nonlinear_axes.c2p(1, 4), color=CLASS_A_COLOR),
+            Dot(nonlinear_axes.c2p(4, 4), color=CLASS_B_COLOR),
+            Dot(nonlinear_axes.c2p(2, 2), color=CLASS_B_COLOR))
+
+        self.play(Write(linear_axes), FadeIn(linear_dots),
+                  Write(nonlinear_axes), FadeIn(nonlinear_dots))
+        self.next_slide()
+
+        ## Slide: show example boundaries
+        nonlinear_model = VGroup(
+            Line(nonlinear_axes.c2p(1.5, 4.5), nonlinear_axes.c2p(1.5, 1.5)),
+            Line(nonlinear_axes.c2p(1.5, 1.5), nonlinear_axes.c2p(4.5, 1.5)))
+
+        linear_model = Line(linear_axes.c2p(1, 4), linear_axes.c2p(4, 1))
+
+        self.play(Create(nonlinear_model),Create(linear_model))
+        self.next_slide()
+
+        ## Slide: go on with the positive points
+        self.play(FadeOut(linear_axes), FadeOut(linear_dots), FadeOut(nonlinear_axes),
+                  FadeOut(nonlinear_dots), FadeOut(linear_model), FadeOut(nonlinear_model))
+        self.play(Write(flexibility_text))
+        self.play(Write(prob_output_text))
         self.next_slide()
 
 
