@@ -962,6 +962,9 @@ class Criterion(Slide):
         class_colors = CLASS_A_COLOR, CLASS_B_COLOR
         neural_net_color = BLUE_E
 
+        net_x_std = 2.5344443
+        net_x_mean = 5.444826
+
         ## Slide: title
         title = Text('How to Train Your Network')
         self.add(title)
@@ -1050,7 +1053,8 @@ class Criterion(Slide):
         # Load the actual model for the predictions
         with open('net_example.pkl', 'rb') as fin:
             skorch_model = pickle.load(fin)
-        f = lambda x: skorch_model.predict_proba(x.astype(np.float32).reshape(1, 1))[:, 1].item()
+        f = lambda x: skorch_model.predict_proba((x.astype(np.float32).reshape(1, 1)
+                                                  - net_x_mean) / net_x_std)[:, 1].item()
         network_plot = axes.plot(f, color=neural_net_color)
 
         # Move the network definition away, color code and plot
