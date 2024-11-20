@@ -327,7 +327,7 @@ class Logistic(ThreeDSlide):
 
         self.next_slide()
 
-        x_z_axes = Axes(plot_range_x, (-6, +6), x_length=15, y_length=8)
+        x_z_axes = Axes(plot_range_x, (-4, +4), x_length=15, y_length=8)
         x_z_axes.add_coordinates().rotate(PI / 2, RIGHT)
 
         ## Slide: show dots on plane
