@@ -428,7 +428,9 @@ class Logistic(ThreeDSlide):
         # to get the most out of the perspective.
         sigmoid_plot = x_z_axes.plot(lambda x: sigmoid((10 * x - 80) / 5))
         self.play(line_w2.animate.set_value(0), line_w1.animate.set_value(10),
-                  line_b.animate.set_value(-80))
+                  line_b.animate.set_value(-80),
+                  # Move all points on the x axis. This is a trick but clearly displays the sigmoid
+                  *(dot.animate.set_y(0) for dot in chain(dots_a, dots_b)))
         self.play(Write(sigmoid_plot))
         self.next_slide()
 
