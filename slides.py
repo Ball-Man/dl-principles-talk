@@ -1076,8 +1076,9 @@ class Criterion(Slide):
         error_lines_group = VGroup()
         # Create them sorted so that it look better when animated
         for dot in sorted(chain(dots_groups[0], dots_groups[1]), key=lambda dot: dot.get_x()):
-            error_lines_group.add(DashedLine(dot.get_center(), axes.i2gp(axes.p2c(dot.get_center())[0],
-                                                                         network_plot),
+            error_lines_group.add(DashedLine(dot.get_center(),
+                                             axes.i2gp(axes.p2c(dot.get_center())[0],
+                                                       network_plot),
                                        color=error_color))
 
         error_text = MathTex('loss = |\,f(x) - c\,|', substrings_to_isolate=['loss'])
@@ -1100,7 +1101,8 @@ class Criterion(Slide):
         self.next_slide()
 
         ## Slide: objective
-        objective_text = Tex(r'Find {{ $A$ }} and {{ $B$ }} \\that minimize the {{ $total\:loss$ }}')
+        objective_text = Tex(r'Find {{ $A$ }} and {{ $B$ }}'
+                             r'\\that minimize the {{ $total\:loss$ }}')
         objective_text[5].set_color(error_color)
         objective_text.shift(2 * UP)
 
@@ -1124,8 +1126,8 @@ class Criterion(Slide):
         ## Slide: show the optimized curve
         with open('net_example_optimized.pkl', 'rb') as fin:
             skorch_model_optim = pickle.load(fin)
-        f_optim = lambda x: skorch_model_optim.predict_proba((x.astype(np.float32).reshape(1, 1)
-                                                              - net_x_mean) / net_x_std)[:, 1].item()
+        f_optim = lambda x: skorch_model_optim.predict_proba(
+            (x.astype(np.float32).reshape(1, 1) - net_x_mean) / net_x_std)[:, 1].item()
         network_plot_optim = axes.plot(f_optim, color=neural_net_color)
 
         self.play(Transform(network_plot, network_plot_optim), FadeOut(error_lines_group))
