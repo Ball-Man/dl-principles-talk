@@ -1116,6 +1116,21 @@ class Criterion(Slide):
         self.play(Write(objective_text))
         self.next_slide()
 
+        ## Slide: add title to the objective
+        objective_title = Tex('How to Train Your Network').to_edge(UP)
+        self.play(Write(objective_title))
+        self.next_slide()
+
+        ## Slide: show the optimized curve
+        with open('net_example_optimized.pkl', 'rb') as fin:
+            skorch_model_optim = pickle.load(fin)
+        f_optim = lambda x: skorch_model_optim.predict_proba((x.astype(np.float32).reshape(1, 1)
+                                                              - net_x_mean) / net_x_std)[:, 1].item()
+        network_plot_optim = axes.plot(f_optim, color=neural_net_color)
+
+        self.play(Transform(network_plot, network_plot_optim), FadeOut(error_lines_group))
+        self.next_slide()
+
 
 class GradientDescent(ThreeDSlide):
 
