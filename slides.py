@@ -396,6 +396,8 @@ class Logistic(ThreeDSlide):
                          .rotate(PI / 2, RIGHT))
         sigmoid_label.font_size = equation_font_size
 
+        line_at_1 = DashedLine(x_z_axes.c2p(0, 1, 0), x_z_axes.c2p(15, 1, 0))
+
         # Temp remove updater to apply sigmoid to all dots
         for dot in chain(dots_a, dots_b):
             dot.remove_updater(dot_updater)
@@ -407,6 +409,7 @@ class Logistic(ThreeDSlide):
                   # Sigmoid the dots
                   *(dot.animate.set_z(x_z_axes.c2p(0, new_z, 0)[2])
                     for dot, new_z in zip(chain(dots_a, dots_b), dots_sig_z)))
+        self.play(Create(line_at_1))
         self.next_slide(loop=True)
 
         def dot_sigmoid_updater(dot: Dot):
