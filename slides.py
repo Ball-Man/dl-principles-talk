@@ -976,11 +976,12 @@ class Criterion(Slide):
 
         ## Slide: the data
         # Define data
-        data = np.array(((-2, 1, 14, -7, 5), (1, 0, 0, 1, 0)))
+        data = np.array(((5, 1, 9, 7, 4.5, 2.3, 5.8, 8.2), (1, 0, 0, 1, 0, 0, 1, 0)))
         label_map = ['A', 'B']
 
         # Define grid
-        local_grid_config = {'origin': UP + 5 * LEFT, 'horizontal_spacing': 1.5 * RIGHT}
+        local_grid_config = {'origin': UP + 5 * LEFT, 'horizontal_spacing': 1.5 * RIGHT,
+                             'vertical_spacing': DOWN * 0.5}
         local_grid = partial(place_in_grid, **local_grid_config)
         local_grid_position = partial(grid_position, **local_grid_config)
 
@@ -1000,7 +1001,7 @@ class Criterion(Slide):
         # Populate table with initial data
         for y_index, (x, y) in enumerate(data.T):
             table_group.add(local_grid(MathTex(str(x)), 0, y_index))
-            y_label = local_grid(MathTex(label_map[y]), 1, y_index, aligned_edge=ORIGIN)
+            y_label = local_grid(MathTex(label_map[int(y)]), 1, y_index, aligned_edge=ORIGIN)
             labels_columns_group.add(y_label)
             table_group.add(y_label)
 
@@ -1028,7 +1029,7 @@ class Criterion(Slide):
         self.next_slide()
 
         ## Slide: predictions
-        predictions = np.array([0.92, 0.4, 0.12, 0.7, 0.9])
+        predictions = np.array([0.92, 0.4, 0.12, 0.7, 0.9, 0.2, 0.3, 0.8])
 
         prediction_line = Line(local_grid_position(2.5, -1.5),
                                local_grid_position(2.5, data.shape[1]))
