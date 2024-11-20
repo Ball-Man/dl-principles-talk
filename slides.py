@@ -1595,3 +1595,21 @@ class BackProp(ThreeDSlide):
             self.play(ReplacementTransform(backprop_output_group, slope_line))
 
         self.next_slide()
+
+
+class ThankYou(Slide):
+
+    def construct(self):
+        self.wait_time_between_slides = 0.1      # Fix incomplete animations
+
+        thank_you = Text('Thank You!')
+        open_source = Text('This presentation\nis open source!',
+                           font_size=30)
+        svg = SVGMobject('qr.svg', width=3)
+        VGroup(thank_you, open_source, svg).arrange(DOWN)
+
+        self.add(thank_you)
+        self.add(open_source)
+        self.add(svg)
+        static_slide(self)
+        self.next_slide()
