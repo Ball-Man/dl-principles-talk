@@ -996,7 +996,7 @@ class Criterion(Slide):
         table_group.add(
             # Add header labels
             local_grid(MathTex('x'), 0, -1),
-            local_grid(MathTex('y'), 1, -1))
+            local_grid(MathTex('c'), 1, -1))
 
         labels_columns_group = VGroup()         # Used later to morph these
 
@@ -1020,18 +1020,19 @@ class Criterion(Slide):
         ## Slide: to plot
         axes = Axes((-1, 11), (0, 1.5), tips=False, y_length=4)
         axes.add_coordinates()
+        axes_labels = axes.get_axis_labels('x', 'c')
 
         dots_groups = [VGroup(), VGroup()]
         for x, y in data.T:
             label = int(y)
             dots_groups[label].add(Dot(axes.c2p(x, 0, 0), color=class_colors[label]))
 
-        self.play(ReplacementTransform(lines_group, axes.axes[0]))
+        self.play(ReplacementTransform(lines_group, axes.axes[0]), Write(axes_labels[0]))
         self.play(ReplacementTransform(table_group, dots_groups[0] + dots_groups[1]))
         self.next_slide()
 
         ## Slide: move them up
-        self.play(Write(axes.axes[1]),
+        self.play(Write(axes.axes[1]), Write(axes_labels[1]),
                   *(dot.animate.set_y(axes.c2p(0, 1, 0)[1]) for dot in dots_groups[1]))
         self.next_slide()
 
