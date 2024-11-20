@@ -959,6 +959,7 @@ class Criterion(Slide):
     def construct(self):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
         class_colors = CLASS_A_COLOR, CLASS_B_COLOR
+        neural_net_color = BLUE_E
 
         ## Slide: title
         title = Text('How to Train Your Network')
@@ -1032,6 +1033,24 @@ class Criterion(Slide):
         ## Slide: move them up
         self.play(Write(axes.axes[1]),
                   *(dot.animate.set_y(axes.c2p(0, 1, 0)[1]) for dot in dots_groups[1]))
+        self.next_slide()
+
+        ## Slide: the network
+        enjoy_text = Tex('Enjoy your network :)').shift(2.5 * UP)
+        regressor_formula = MathTex(r'f(x) = \sigma(\,B\: \sigma(\,A x\,)\,)',
+                                    substrings_to_isolate=['f(x)']).shift(1.5 * UP)
+
+        self.play(Write(enjoy_text), Write(regressor_formula))
+        self.next_slide()
+
+        ## Slide: plot the network predictions
+        f  = lambda x: np.random.uniform(0, 1)          # Temporary
+        network_plot = axes.plot(f, color=neural_net_color)
+
+        # Move the network definition away, color code and plot
+        self.play(FadeOut(enjoy_text), regressor_formula.animate.to_edge(UP))
+        self.play(regressor_formula[0].animate.set_color(neural_net_color),
+                  Write(network_plot))
         self.next_slide()
 
         ## Slide: from class label to 0-1
