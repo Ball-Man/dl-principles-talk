@@ -292,6 +292,25 @@ class Logistic(ThreeDSlide):
                   line_b.animate.set_value(-9))
         self.next_slide()
 
+        ## Slide: new dots
+        new_dots_a_origins_coords = generate_points(self.rng, 2, (1, 2), (5, 6.5))
+        new_dots_b_origins_coords = generate_points(self.rng, 2, (12, 14), (3, 5))
+        new_dots_a = [Dot(plane.c2p(*coords2d)) for coords2d in new_dots_a_origins_coords]
+        new_dots_b = [Dot(plane.c2p(*coords2d)) for coords2d in new_dots_b_origins_coords]
+        dots_a += new_dots_a
+        dots_b += new_dots_b
+        dots_a_group.add(*new_dots_a)
+        dots_b_group.add(*new_dots_b)
+
+        self.play(FadeIn(dot) for dot in chain(new_dots_a, new_dots_b))
+        self.add_fixed_orientation_mobjects(*new_dots_a, *new_dots_b)
+        self.next_slide()
+
+        ## Slide: classify dots
+        self.play(dot.animate.set_color(CLASS_A_COLOR) for dot in new_dots_a)
+        self.play(dot.animate.set_color(CLASS_B_COLOR) for dot in new_dots_b)
+        self.next_slide()
+
         ## Slide: From decision boundary to plane
         # Disable temporarily the weights updaters to avoid animation artifacts
         w1_label.remove_updater(tex_w1_updater)
