@@ -1,3 +1,4 @@
+import pickle
 from itertools import chain, product
 from collections.abc import Iterable, Callable
 from functools import partial
@@ -1045,7 +1046,11 @@ class Criterion(Slide):
         self.next_slide()
 
         ## Slide: plot the network predictions
-        f  = lambda x: np.random.uniform(0, 1)          # Temporary
+        # f  = lambda x: np.random.uniform(0, 1)          # Temporary
+        # Load the actual model for the predictions
+        with open('net_example.pkl', 'rb') as fin:
+            skorch_model = pickle.load(fin)
+        f = lambda x: skorch_model.predict_proba(x.astype(np.float32).reshape(1, 1))[:, 1].item()
         network_plot = axes.plot(f, color=neural_net_color)
 
         # Move the network definition away, color code and plot
