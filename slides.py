@@ -961,6 +961,7 @@ class Criterion(Slide):
         self.wait_time_between_slides = 0.1      # Fix incomplete animations
         class_colors = CLASS_A_COLOR, CLASS_B_COLOR
         neural_net_color = BLUE_E
+        error_color = RED
 
         net_x_std = 2.5344443
         net_x_mean = 5.444826
@@ -1061,6 +1062,22 @@ class Criterion(Slide):
         self.play(FadeOut(enjoy_text), regressor_formula.animate.to_edge(UP))
         self.play(regressor_formula[0].animate.set_color(neural_net_color),
                   Write(network_plot))
+        self.next_slide()
+
+        ## Slide: show error
+        error_lines_group = VGroup()
+        # Create them sorted so that it look better when animated
+        for dot in sorted(chain(dots_groups[0], dots_groups[1]), key=lambda dot: dot.get_x()):
+            error_lines_group.add(DashedLine(dot.get_center(), axes.i2gp(axes.p2c(dot.get_center())[0],
+                                                                         network_plot),
+                                       color=error_color))
+
+        error_text = MathTex('loss = |\,f(x) - c\,|', substrings_to_isolate=['loss'])
+        error_text[0].set_color(error_color)
+        error_text.next_to(regressor_formula, DOWN, aligned_edge=LEFT)
+
+        error_lines_group.set_z_index(dots_groups[0].z_index - 1)
+        self.play(Write(error_text), Create(error_lines_group))
         self.next_slide()
 
         ## Slide: from class label to 0-1
