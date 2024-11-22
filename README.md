@@ -1,3 +1,10 @@
+# Deep Learning Principles - Slides
+This repository contains the code and assets used to generate the slides and animations for the Deep Learning Principles talk. The talk originally took place in Seewiesen, 2024/11/21. The resulting presentaiton was designed to be understandable and appealing to a mixed audience of biologists.
+
+A prerendered version of the presentation is now available at: https://ball-man.github.io/dl-principles-talk/.
+
+Alternatively, keep reading to learn how to render and present these slides yourself.
+
 ## Installation
 This project uses the manim (community edition) to render animation, and manim-slides to concatenate them into a viable presentation.
 
